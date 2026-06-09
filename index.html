@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reporte Semanal de Gastos — TSDOCS</title>
+<title>Reporte de Gastos — TSDOCS</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
   --bg:#0f1117; --surface:#181c27; --surface2:#1e2333; --border:#2a2f42;
-  --accent:#4f8ef7; --green:#2ecc71; --yellow:#f0a500; --orange:#e67e22;
+  --accent:#4f8ef7; --green:#2ecc71; --yellow:#f0a500;
   --text:#e8eaf0; --muted:#7c839e;
   --font-d:'DM Serif Display',serif; --font-b:'DM Sans',sans-serif; --font-m:'DM Mono',monospace;
 }
@@ -16,22 +17,42 @@
 body{background:var(--bg);color:var(--text);font-family:var(--font-b);font-size:14px;line-height:1.5;}
  
 /* HEADER */
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:22px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
 header h1{font-family:var(--font-d);font-size:24px;font-weight:400;color:#fff;}
 header p{color:var(--muted);font-size:12px;margin-top:3px;}
-.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.25);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--accent);}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.header-right{display:flex;align-items:center;gap:12px;}
  
-/* TABS */
-.tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:stretch;flex-wrap:wrap;gap:0;}
-.tab-group{display:flex;align-items:center;gap:4px;padding:12px 0;margin-right:28px;}
+/* UPLOAD BUTTON */
+.btn-upload{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-b);transition:background .15s;}
+.btn-upload:hover{background:#3a7de0;}
+.btn-upload svg{flex-shrink:0;}
+#file-input{display:none;}
+ 
+/* UPLOAD STATE */
+.upload-state{font-size:12px;color:var(--muted);}
+.upload-state.ok{color:var(--green);}
+.upload-state.err{color:#e74c3c;}
+ 
+/* EMPTY STATE */
+#empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;text-align:center;padding:40px;}
+#empty-state h2{font-family:var(--font-d);font-size:28px;font-weight:400;color:#fff;}
+#empty-state p{color:var(--muted);font-size:14px;max-width:400px;}
+.btn-upload-big{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font-b);transition:background .15s;margin-top:8px;}
+.btn-upload-big:hover{background:#3a7de0;}
+ 
+/* DASHBOARD */
+#dashboard{display:none;}
+ 
+/* TABS BAR */
+.tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:stretch;flex-wrap:wrap;}
+.tab-group{display:flex;align-items:center;gap:3px;padding:10px 0;margin-right:22px;}
 .tab-group-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-right:8px;white-space:nowrap;}
-.tab{padding:6px 14px;border-radius:6px;font-size:12.5px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s;white-space:nowrap;font-family:var(--font-b);}
+.tab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s;white-space:nowrap;font-family:var(--font-b);}
 .tab:hover{background:var(--surface2);color:var(--text);}
+.tab.on-s{background:rgba(155,89,182,.18);color:#c39ef8;font-weight:600;}
 .tab.on-u{background:rgba(79,142,247,.15);color:#7cb9ff;font-weight:600;}
 .tab.on-a{background:rgba(240,165,0,.14);color:#f0c040;font-weight:600;}
-.tab-info{margin-left:auto;display:flex;align-items:center;gap:10px;padding:12px 0;}
+.tab-info{margin-left:auto;display:flex;align-items:center;gap:10px;padding:10px 0;}
 .tab-count{font-family:var(--font-m);font-size:11px;color:var(--muted);background:var(--surface2);padding:3px 10px;border-radius:20px;border:1px solid var(--border);}
 .btn-reset{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;cursor:pointer;padding:4px 10px;border-radius:6px;font-family:var(--font-b);transition:all .15s;}
 .btn-reset:hover{border-color:var(--accent);color:var(--text);}
@@ -40,7 +61,7 @@ header p{color:var(--muted);font-size:12px;margin-top:3px;}
 main{padding:28px 40px;max-width:1300px;margin:0 auto;}
  
 /* KPIS */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .kpi.k1::before{background:linear-gradient(90deg,var(--accent),#7cb9ff);}
@@ -52,19 +73,18 @@ main{padding:28px 40px;max-width:1300px;margin:0 auto;}
 .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;}
  
 /* GRID */
-.cols2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
-.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
  
 /* PANEL */
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
 .panel-title{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
  
 /* BARS */
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .bar-label{font-size:12px;color:var(--text);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bar-track{flex:1;background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1);}
-.bar-amount{font-family:var(--font-m);font-size:11px;color:var(--muted);width:110px;text-align:right;flex-shrink:0;}
+.bar-fill{height:100%;border-radius:4px;transition:width .45s cubic-bezier(.4,0,.2,1);}
+.bar-amount{font-family:var(--font-m);font-size:11px;color:var(--muted);width:105px;text-align:right;flex-shrink:0;}
  
 /* TABLE */
 .table-wrap{overflow-x:auto;}
@@ -75,237 +95,357 @@ tbody tr:hover{background:rgba(79,142,247,.04);}
 tbody td{padding:8px 10px;color:var(--text);vertical-align:middle;}
 .mono{font-family:var(--font-m);font-size:12px;}
 .dim{color:var(--muted);}
-.badge-s{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;}
-.bdot{width:5px;height:5px;border-radius:50%;}
-.s-v{background:rgba(46,204,113,.1);color:#2ecc71;}.s-v .bdot{background:#2ecc71;}
-.s-a{background:rgba(240,165,0,.1);color:#f0a500;}.s-a .bdot{background:#f0a500;}
-.s-g{background:rgba(230,126,34,.1);color:#e67e22;}.s-g .bdot{background:#e67e22;}
-.s-p{background:rgba(85,91,114,.15);color:#aaa;}.s-p .bdot{background:#888;}
-tr.sub-row td{background:rgba(255,255,255,.02);font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;}
-tr.tot-row td{border-top:2px solid var(--border);font-weight:700;color:#fff;font-size:13px;padding-top:10px;}
+.bs{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;}
+.bd{width:5px;height:5px;border-radius:50%;}
+.sv{background:rgba(46,204,113,.1);color:#2ecc71;}.sv .bd{background:#2ecc71;}
+.sa{background:rgba(240,165,0,.1);color:#f0a500;}.sa .bd{background:#f0a500;}
+.sg{background:rgba(230,126,34,.1);color:#e67e22;}.sg .bd{background:#e67e22;}
+.sp{background:rgba(85,91,114,.15);color:#aaa;}.sp .bd{background:#888;}
+tr.sub-r td{background:rgba(255,255,255,.02);font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;}
+tr.tot-r td{border-top:2px solid var(--border);font-weight:700;color:#fff;font-size:13px;padding-top:10px;}
 .empty-msg{text-align:center;color:var(--muted);padding:28px;font-size:13px;}
  
-footer{text-align:center;padding:24px 40px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:8px;}
-@media(max-width:900px){header,main,.tabs-bar{padding:16px;}
-.kpis{grid-template-columns:1fr 1fr;}.cols2,.cols3{grid-template-columns:1fr;}}
+footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:8px;}
+@media(max-width:900px){
+  header,main,.tabs-bar{padding:16px;}
+  .kpis{grid-template-columns:1fr 1fr;}
+  .cols3{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
  
 <header>
   <div>
-    <h1>Reporte Semanal de Gastos de Campo</h1>
-    <p>Período <strong>01/06 al 07/06</strong> · Gastos realizados · Plataforma TSDOCS</p>
+    <h1>Reporte de Gastos de Campo</h1>
+    <p>Gastos realizados · Plataforma TSDOCS · <span id="header-periodo">—</span></p>
   </div>
-  <div class="badge"><span class="dot"></span>Solo lectura · Semana actual</div>
+  <div class="header-right">
+    <span class="upload-state" id="upload-state"></span>
+    <label class="btn-upload" for="file-input">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Subir Excel TSDOCS
+    </label>
+    <input type="file" id="file-input" accept=".xlsx,.xls">
+  </div>
 </header>
  
-<div class="tabs-bar">
-  <div class="tab-group">
-    <span class="tab-group-label">Unidad</span>
-    <button class="tab on-u" data-type="u" data-val="all">Todas</button>
-    <button class="tab" data-type="u" data-val="Feedlot">Feedlot</button>
-    <button class="tab" data-type="u" data-val="Cría">Cría</button>
-    <button class="tab" data-type="u" data-val="Agricultura">Agricultura</button>
-    <button class="tab" data-type="u" data-val="Planta">Planta</button>
-    <button class="tab" data-type="u" data-val="A distribuir a CC">A distribuir</button>
-  </div>
-  <div class="tab-group">
-    <span class="tab-group-label">Autorizante</span>
-    <button class="tab on-a" data-type="a" data-val="all">Todos</button>
-    <button class="tab" data-type="a" data-val="Cristian Amaya">C. Amaya</button>
-    <button class="tab" data-type="a" data-val="Daniel Barruti">D. Barruti</button>
-    <button class="tab" data-type="a" data-val="Sandra Bartucci">S. Bartucci</button>
-  </div>
-  <div class="tab-info">
-    <span class="tab-count" id="tab-count">18 comprobantes</span>
-    <button class="btn-reset" onclick="resetF()">✕ Limpiar</button>
-  </div>
+<!-- EMPTY STATE -->
+<div id="empty-state">
+  <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+  <h2>Subí el Excel de TSDOCS</h2>
+  <p>El tablero procesa el archivo en el momento y muestra todos los gastos con filtros por semana, unidad y autorizante.</p>
+  <label class="btn-upload-big" for="file-input">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Subir Excel TSDOCS
+  </label>
 </div>
  
-<main>
- 
-  <!-- KPIs -->
-  <div class="kpis">
-    <div class="kpi k1"><div class="kpi-label">Total gastos</div><div class="kpi-value" id="k-total">—</div><div class="kpi-sub" id="k-docs">—</div></div>
-    <div class="kpi k2"><div class="kpi-label">Comprobantes</div><div class="kpi-value" id="k-count">—</div><div class="kpi-sub">en el filtro actual</div></div>
-    <div class="kpi k3"><div class="kpi-label">Autorizado, pend. pago</div><div class="kpi-value" id="k-analista">—</div><div class="kpi-sub">Estado Analista</div></div>
-    <div class="kpi k4"><div class="kpi-label">Pasado a pagar</div><div class="kpi-value" id="k-verif">—</div><div class="kpi-sub">Estado Verificado</div></div>
-  </div>
- 
-  <!-- CHARTS -->
-  <div class="cols3">
-    <div class="panel"><div class="panel-title">Por campo</div><div id="chart-campo"></div></div>
-    <div class="panel"><div class="panel-title">Por autorizante</div><div id="chart-aut"></div></div>
-    <div class="panel"><div class="panel-title">Por cuenta / concepto</div><div id="chart-cuenta"></div></div>
-  </div>
- 
-  <!-- DETALLE -->
-  <div class="panel" style="margin-bottom:18px">
-    <div class="panel-title">Detalle de comprobantes</div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Autorizante</th><th>Proveedor</th><th>Campo</th><th>Unidad</th>
-          <th>Detalle</th><th>Estado</th><th style="text-align:right">Importe</th>
-          <th>Cuenta</th><th>Id</th>
-        </tr></thead>
-        <tbody id="tbody-det"></tbody>
-      </table>
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="tabs-bar">
+    <div class="tab-group">
+      <span class="tab-group-label">Semana</span>
+      <div id="tabs-semana" style="display:flex;gap:3px;align-items:center;"></div>
+    </div>
+    <div class="tab-group">
+      <span class="tab-group-label">Unidad</span>
+      <div id="tabs-unidad" style="display:flex;gap:3px;align-items:center;"></div>
+    </div>
+    <div class="tab-group">
+      <span class="tab-group-label">Autorizante</span>
+      <div id="tabs-aut" style="display:flex;gap:3px;align-items:center;"></div>
+    </div>
+    <div class="tab-info">
+      <span class="tab-count" id="tab-count">—</span>
+      <button class="btn-reset" onclick="resetF()">✕ Limpiar</button>
     </div>
   </div>
  
-</main>
- 
-<footer>TSDOCS · Período 01/06 al 07/06 · Importes en pesos ($) · Verificado = pasado a pagar · Analista = autorizado, pend. de pago</footer>
+  <main>
+    <div class="kpis">
+      <div class="kpi k1"><div class="kpi-label">Total gastos</div><div class="kpi-value" id="k-total">—</div><div class="kpi-sub" id="k-docs">—</div></div>
+      <div class="kpi k2"><div class="kpi-label">Comprobantes</div><div class="kpi-value" id="k-count">—</div><div class="kpi-sub">en el filtro actual</div></div>
+      <div class="kpi k3"><div class="kpi-label">Autorizado, pend. pago</div><div class="kpi-value" id="k-analista">—</div><div class="kpi-sub">Estado Analista</div></div>
+      <div class="kpi k4"><div class="kpi-label">Pasado a pagar</div><div class="kpi-value" id="k-verif">—</div><div class="kpi-sub">Estado Verificado</div></div>
+    </div>
+    <div class="cols3">
+      <div class="panel"><div class="panel-title">Por campo</div><div id="chart-campo"></div></div>
+      <div class="panel"><div class="panel-title">Por autorizante</div><div id="chart-aut"></div></div>
+      <div class="panel"><div class="panel-title">Por cuenta / concepto</div><div id="chart-cuenta"></div></div>
+    </div>
+    <div class="panel" style="margin-bottom:18px">
+      <div class="panel-title">Detalle de comprobantes</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Autorizante</th><th>Proveedor</th><th>Campo</th><th>Unidad</th>
+            <th>Detalle</th><th>Estado</th><th style="text-align:right">Importe</th>
+            <th>Cuenta</th><th>Semana</th><th>Id</th>
+          </tr></thead>
+          <tbody id="tbody-det"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <footer>TSDOCS · Importes en pesos ($) · Semana determinada por fecha de autorización · Verificado = pasado a pagar · Analista = autorizado, pend. de pago</footer>
+</div>
  
 <script>
-const DATA = [
-  {aut:'Cristian Amaya', prov:'IKES JUAN CARLOS',            campo:'25 de Mayo', unidad:'Feedlot',         detalle:'Flete de hacienda a Frigorífico La Anónima',              estado:'Verificado', imp:2764850,     cuenta:'Fletes',                       id:10771},
-  {aut:'Cristian Amaya', prov:'EMPRESA EL CEIBO SRL',        campo:'Winifreda',  unidad:'Cría',            detalle:'Pasajes de personal (salida de franco, mayo)',             estado:'Analista',   imp:140000,      cuenta:'Personal',                     id:10799},
-  {aut:'Cristian Amaya', prov:'AGUADAS ALOMAR SRL',          campo:'Winifreda',  unidad:'Cría',            detalle:'Manta para tanque de Alto Pincén',                        estado:'Analista',   imp:229200,      cuenta:'Maquinaria',                   id:10808},
-  {aut:'Cristian Amaya', prov:'GABINO RAUL PASCUAL',         campo:'Winifreda',  unidad:'Cría',            detalle:'Vacunas, varillas, raspaje 42 toros, sangrado Brucelosis', estado:'Verificado', imp:10229358.15, cuenta:'Sanidad / Veterinaria',        id:10811},
-  {aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',       campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Agricultura',                                             estado:'Verificado', imp:2887000,     cuenta:'Honorarios Asesores Externos', id:10788},
-  {aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',       campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Agricultura',                                             estado:'Analista',   imp:2887000,     cuenta:'Honorarios Asesores Externos', id:10789},
-  {aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',       campo:'Ab Energía', unidad:'Planta',          detalle:'AB Energía',                                              estado:'Analista',   imp:360607.24,   cuenta:'Energía / Servicios',          id:10790},
-  {aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',       campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Empresa de maquinaria',                                   estado:'Analista',   imp:200700.25,   cuenta:'Maquinaria',                   id:10791},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',   campo:'Ab Energía', unidad:'Planta',          detalle:'AB Energía',                                              estado:'Analista',   imp:38962,       cuenta:'Energía / Servicios',          id:10792},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',   campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Empresa de maquinaria',                                   estado:'Analista',   imp:37873,       cuenta:'Maquinaria',                   id:10793},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',   campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Empresa de maquinaria',                                   estado:'Analista',   imp:57838.67,    cuenta:'Maquinaria',                   id:10794},
-  {aut:'Daniel Barruti', prov:'COOP REGIONAL OESTE PAMPEANO',campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Administración (sin asignar a CC operativo)',            estado:'Analista',   imp:60929.31,    cuenta:'Administración',               id:10795},
-  {aut:'Daniel Barruti', prov:'BERGONDI MIGUEL ANGEL',       campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Personal (sin asignar a CC operativo)',                  estado:'Analista',   imp:133705,      cuenta:'Personal',                     id:10800},
-  {aut:'Daniel Barruti', prov:'AC ELECTRICIDAD SAS',         campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Empresa de maquinaria (generador portátil)',              estado:'Analista',   imp:414515.57,   cuenta:'Maquinaria',                   id:10806},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',   campo:'Ab Energía', unidad:'Planta',          detalle:'AB Energía',                                              estado:'Analista',   imp:104080.19,   cuenta:'Energía / Servicios',          id:10801},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',   campo:'Ab Energía', unidad:'Planta',          detalle:'AB Energía',                                              estado:'Analista',   imp:38962,       cuenta:'Energía / Servicios',          id:10817},
-  {aut:'Daniel Barruti', prov:'GARRO MONICA ALEJANDRA',      campo:'Ab Energía', unidad:'Planta',          detalle:'AB Energía (Daniel)',                                      estado:'Analista',   imp:640000,      cuenta:'Energía / Servicios',          id:10838},
-  {aut:'Sandra Bartucci',prov:'GONZALEZ IGNACIO GENARO',     campo:'Ab Energía', unidad:'Planta',          detalle:'Servicio chillers J-501/J-502 (cableado por roedores)',   estado:'Analista',   imp:1650000,     cuenta:'Mantenimiento Equipos',        id:10804},
-];
- 
+// ── Colores ──────────────────────────────────────────────────────────────
 const CUENTA_COLORS = {
   'Sanidad / Veterinaria':'#2ecc71','Honorarios Asesores Externos':'#4f8ef7',
   'Fletes':'#f0a500','Maquinaria':'#e67e22','Energía / Servicios':'#9b59b6',
   'Mantenimiento Equipos':'#e84393','Personal':'#1abc9c','Administración':'#95a5a6'
 };
 const CAMPO_COLORS  = {'Winifreda':'#2ecc71','25 de Mayo':'#4f8ef7','Ab Energía':'#9b59b6'};
-const AUT_COLORS    = {'Cristian Amaya':'#4f8ef7','Daniel Barruti':'#f0a500','Sandra Bartucci':'#f06'};
+const AUT_COLORS    = {};
+const AUT_PALETTE   = ['#4f8ef7','#f0a500','#f06','#2ecc71','#9b59b6','#e84393','#1abc9c'];
  
 const fmt = n => '$' + n.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0});
-const pct = (a,b) => b ? (a/b*100).toFixed(1)+'%' : '0%';
  
-let fU = 'all', fA = 'all';
+let DATA = [];
+let fS='all', fU='all', fA='all';
  
+// ── Parsear Excel ────────────────────────────────────────────────────────
+const ESTADO_ORDER = {Verificado:4, Analista:3, Gerente:2, Pivot:1};
+ 
+// Mapeo Centro de Costo → campo + unidad
+function mapCC(detalle, sociedad) {
+  const d = (detalle||'').toUpperCase();
+  const cc = (d.match(/=CC:\s*(.+)/)||[])[1]||'';
+  if (/FEED.?LOT|25.FEED/i.test(cc)||/FEED.?LOT/i.test(d)) return {campo:'25 de Mayo', unidad:'Feedlot'};
+  if (/WINIFREDA|W-/i.test(cc)||/WINIFREDA/i.test(d))      return {campo:'Winifreda',  unidad:'Cría'};
+  if (/AB.ENERG|ABEN/i.test(cc)||sociedad==='ABEN'||/AB.ENERG/i.test(d)) return {campo:'Ab Energía', unidad:'Planta'};
+  if (/25.EMPRESA.MAQ/i.test(cc)||/EMPRESA.MAQ/i.test(d))  return {campo:'25 de Mayo', unidad:'Agricultura'};
+  if (/25.ADMIN/i.test(cc)||/ADMIN/i.test(d))               return {campo:'25 de Mayo', unidad:'A distribuir a CC'};
+  if (/25.PERSONAL/i.test(cc)||/PERSONAL/i.test(d))         return {campo:'25 de Mayo', unidad:'A distribuir a CC'};
+  if (sociedad==='ABEN') return {campo:'Ab Energía', unidad:'Planta'};
+  return {campo:'25 de Mayo', unidad:'A distribuir a CC'};
+}
+ 
+function mapCuenta(prov, detalle, unidad) {
+  const d = (detalle||'').toLowerCase();
+  const p = (prov||'').toLowerCase();
+  if (/vacuna|veterina|sanidad|brucelosis|toro|raspaje/i.test(d)) return 'Sanidad / Veterinaria';
+  if (/garcia nicolas/i.test(p)||/honorario|asesor/i.test(d))    return 'Honorarios Asesores Externos';
+  if (/flete|hacienda.*frigorifico|frigorifico.*hacienda/i.test(d)) return 'Fletes';
+  if (/chiller|j-50|mantenimiento.*equipo|cableado.*roedor/i.test(d)) return 'Mantenimiento Equipos';
+  if (/maquinaria|empresa.maquinaria|generador|cubierta|repuesto/i.test(d)) return 'Maquinaria';
+  if (/energia|energía|ab.energ/i.test(d)||unidad==='Planta') return 'Energía / Servicios';
+  if (/personal|pasaje|franco/i.test(d)) return 'Personal';
+  if (/admin/i.test(d)) return 'Administración';
+  return 'Otros';
+}
+ 
+function limpiarDetalle(s) {
+  return (s||'').replace(/=CC:[^=]*/g,'').replace(/[ÁÀÄA]/g,c=>'Á'===c?'Á':'a')
+    .replace(/Ã³/g,'ó').replace(/Ã¡/g,'á').replace(/Ã©/g,'é').replace(/Ã/g,'Í')
+    .replace(/\s+/g,' ').trim();
+}
+ 
+function excelDateToISO(v) {
+  if (!v) return null;
+  if (typeof v === 'string' && v.match(/\d{4}-\d{2}-\d{2}/)) return v.slice(0,10);
+  if (typeof v === 'number') {
+    const d = new Date(Math.round((v - 25569)*86400*1000));
+    return d.toISOString().slice(0,10);
+  }
+  return null;
+}
+ 
+function weekLabel(iso) {
+  if (!iso) return 'Sin fecha';
+  const d = new Date(iso+'T12:00:00');
+  // lunes de esa semana
+  const day = d.getDay()||7;
+  const mon = new Date(d); mon.setDate(d.getDate()-day+1);
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  const fmt2 = x => String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0')+'/'+x.getFullYear();
+  return fmt2(mon)+'–'+fmt2(sun);
+}
+ 
+function processExcel(wb) {
+  // Buscar hoja cruda (la que tiene más filas, no es Dashboard ni Reporte)
+  let sheetName = wb.SheetNames.find(n => !/dashboard|reporte/i.test(n));
+  if (!sheetName) sheetName = wb.SheetNames[wb.SheetNames.length-1];
+  const ws = wb.Sheets[sheetName];
+  const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+ 
+  // Agrupar por Id Documento, quedar con estado más avanzado
+  const byId = {};
+  rows.forEach(r => {
+    const id = r['Id Documento']||r['Id_Documento']||r['id'];
+    if (!id) return;
+    const estado = r['Estado del Workflow']||r['Estado']||'';
+    const ord = ESTADO_ORDER[estado]||0;
+    if (!byId[id] || ord > (ESTADO_ORDER[byId[id].estado]||0)) {
+      byId[id] = {
+        id,
+        prov:    r['Razón Social']||r['Razon Social']||r['RazÃ³n Social']||'',
+        sociedad:r['Sociedad']||'',
+        aut:     r['Autorizante']||'Sin asignar',
+        detalle: r['Detalle']||r['detalle']||'',
+        estado,
+        imp:     parseFloat(r['Importe'])||0,
+        faut:    excelDateToISO(r['Fecha de autorizacion']||r['Fecha de autorización']||r['Fecha autorizacion']||''),
+      };
+    }
+  });
+ 
+  const result = [];
+  const autList = [];
+  Object.values(byId).forEach(r => {
+    const {campo, unidad} = mapCC(r.detalle, r.sociedad);
+    const cuenta = mapCuenta(r.prov, r.detalle, unidad);
+    const sem = weekLabel(r.faut);
+    const det = limpiarDetalle(r.detalle);
+    if (!AUT_COLORS[r.aut]) {
+      AUT_COLORS[r.aut] = AUT_PALETTE[Object.keys(AUT_COLORS).length % AUT_PALETTE.length];
+    }
+    result.push({id:r.id, prov:r.prov, aut:r.aut||'Sin asignar', campo, unidad, detalle:det, estado:r.estado, imp:r.imp, cuenta, sem, faut:r.faut});
+  });
+ 
+  return result;
+}
+ 
+// ── Filtros ───────────────────────────────────────────────────────────────
 function filtered() {
   return DATA.filter(r =>
-    (fU === 'all' || r.unidad === fU) &&
-    (fA === 'all' || r.aut === fA)
+    (fS==='all'||r.sem===fS) &&
+    (fU==='all'||r.unidad===fU) &&
+    (fA==='all'||r.aut===fA)
   );
 }
  
 function sumBy(rows, key) {
-  const m = {};
-  rows.forEach(r => { m[r[key]] = (m[r[key]]||0) + r.imp; });
+  const m={};
+  rows.forEach(r=>{m[r[key]]=(m[r[key]]||0)+r.imp;});
   return Object.entries(m).sort((a,b)=>b[1]-a[1]);
 }
  
-function renderBars(containerId, entries, colorMap, total) {
-  const el = document.getElementById(containerId);
-  if (!entries.length) { el.innerHTML = '<div class="empty-msg">Sin datos</div>'; return; }
-  const max = entries[0][1];
-  el.innerHTML = entries.map(([k,v]) => `
+// ── Render ────────────────────────────────────────────────────────────────
+function renderBars(id, entries, colorMap) {
+  const el=document.getElementById(id);
+  if(!entries.length){el.innerHTML='<div class="empty-msg">Sin datos</div>';return;}
+  const max=entries[0][1];
+  el.innerHTML=entries.map(([k,v])=>`
     <div class="bar-row">
-      <div class="bar-label" style="width:140px">${k}</div>
+      <div class="bar-label" style="width:130px">${k}</div>
       <div class="bar-track"><div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%;background:${colorMap[k]||'#4f8ef7'}"></div></div>
       <div class="bar-amount">${fmt(v)}</div>
     </div>`).join('');
 }
  
 function renderTable(rows) {
-  const tb = document.getElementById('tbody-det');
-  if (!rows.length) {
-    tb.innerHTML = `<tr><td colspan="9" class="empty-msg">No hay comprobantes para esta selección.</td></tr>`;
-    return;
-  }
-  const total = rows.reduce((s,r)=>s+r.imp,0);
-  const sClass = s => ({Verificado:'s-v',Analista:'s-a',Gerente:'s-g',Pivot:'s-p'}[s]||'s-p');
- 
-  // group by autorizante
-  const groups = {};
-  rows.forEach(r => { (groups[r.aut] = groups[r.aut]||[]).push(r); });
- 
-  let html = '';
-  Object.entries(groups).forEach(([aut, gr]) => {
-    const sub = gr.reduce((s,r)=>s+r.imp,0);
-    gr.forEach((r,i) => {
-      html += `<tr>
+  const tb=document.getElementById('tbody-det');
+  if(!rows.length){tb.innerHTML=`<tr><td colspan="10" class="empty-msg">No hay comprobantes para esta selección.</td></tr>`;return;}
+  const total=rows.reduce((s,r)=>s+r.imp,0);
+  const sc=s=>({Verificado:'sv',Analista:'sa',Gerente:'sg',Pivot:'sp'}[s]||'sp');
+  const groups={};
+  rows.forEach(r=>{(groups[r.aut]=groups[r.aut]||[]).push(r);});
+  let html='';
+  Object.entries(groups).forEach(([aut,gr])=>{
+    const sub=gr.reduce((s,r)=>s+r.imp,0);
+    gr.forEach((r,i)=>{
+      html+=`<tr>
         <td style="${i===0?'font-weight:600;color:#fff':''}">${i===0?aut:''}</td>
-        <td>${r.prov}</td>
-        <td>${r.campo}</td>
+        <td>${r.prov}</td><td>${r.campo}</td>
         <td class="dim">${r.unidad}</td>
-        <td class="dim" style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.detalle}</td>
-        <td><span class="badge-s ${sClass(r.estado)}"><span class="bdot"></span>${r.estado}</span></td>
+        <td class="dim" style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.detalle}</td>
+        <td><span class="bs ${sc(r.estado)}"><span class="bd"></span>${r.estado}</span></td>
         <td class="mono" style="text-align:right">${fmt(r.imp)}</td>
         <td class="dim">${r.cuenta}</td>
+        <td class="mono dim">${r.sem}</td>
         <td class="mono dim">${r.id}</td>
       </tr>`;
     });
-    html += `<tr class="sub-row">
-      <td colspan="6" style="text-align:right;padding-right:8px">Subtotal ${aut}</td>
-      <td class="mono" style="text-align:right">${fmt(sub)}</td>
-      <td colspan="2"></td>
-    </tr>`;
+    html+=`<tr class="sub-r"><td colspan="6" style="text-align:right;padding-right:8px">Subtotal ${aut}</td><td class="mono" style="text-align:right">${fmt(sub)}</td><td colspan="3"></td></tr>`;
   });
-  html += `<tr class="tot-row">
-    <td colspan="6" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td>
-    <td class="mono" style="text-align:right">${fmt(total)}</td>
-    <td colspan="2"></td>
-  </tr>`;
-  tb.innerHTML = html;
+  html+=`<tr class="tot-r"><td colspan="6" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td><td class="mono" style="text-align:right">${fmt(total)}</td><td colspan="3"></td></tr>`;
+  tb.innerHTML=html;
+}
+ 
+function buildTabGroup(containerId, values, currentVal, type, onCls) {
+  const el=document.getElementById(containerId);
+  let html=`<button class="tab ${currentVal==='all'?onCls:''}" data-type="${type}" data-val="all">Todas</button>`;
+  values.forEach(v=>{
+    html+=`<button class="tab ${currentVal===v?onCls:''}" data-type="${type}" data-val="${v}">${v.length>18?v.slice(0,16)+'…':v}</button>`;
+  });
+  el.innerHTML=html;
+  el.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    if(type==='s') fS=t.dataset.val;
+    else if(type==='u') fU=t.dataset.val;
+    else fA=t.dataset.val;
+    el.querySelectorAll('.tab').forEach(x=>x.classList.remove(onCls));
+    t.classList.add(onCls);
+    render();
+  }));
 }
  
 function render() {
-  const rows  = filtered();
-  const total = rows.reduce((s,r)=>s+r.imp,0);
-  const analista = rows.filter(r=>r.estado==='Analista').reduce((s,r)=>s+r.imp,0);
-  const verif    = rows.filter(r=>r.estado==='Verificado').reduce((s,r)=>s+r.imp,0);
+  const rows=filtered();
+  const total=rows.reduce((s,r)=>s+r.imp,0);
+  const analista=rows.filter(r=>r.estado==='Analista').reduce((s,r)=>s+r.imp,0);
+  const verif=rows.filter(r=>r.estado==='Verificado').reduce((s,r)=>s+r.imp,0);
  
-  // KPIs
-  document.getElementById('k-total').textContent    = fmt(total);
-  document.getElementById('k-count').textContent    = rows.length;
-  document.getElementById('k-docs').textContent     = rows.length + ' comprobante' + (rows.length!==1?'s':'');
-  document.getElementById('k-analista').textContent = fmt(analista);
-  document.getElementById('k-verif').textContent    = fmt(verif);
-  document.getElementById('tab-count').textContent  = rows.length + ' comprobante' + (rows.length!==1?'s':'') + ' · ' + fmt(total);
+  document.getElementById('k-total').textContent=fmt(total);
+  document.getElementById('k-count').textContent=rows.length;
+  document.getElementById('k-docs').textContent=rows.length+' comprobante'+(rows.length!==1?'s':'');
+  document.getElementById('k-analista').textContent=fmt(analista);
+  document.getElementById('k-verif').textContent=fmt(verif);
+  document.getElementById('tab-count').textContent=rows.length+' comp. · '+fmt(total);
+  document.getElementById('header-periodo').textContent=fS==='all'?'Todas las semanas':'Semana '+fS;
  
-  // Charts
-  renderBars('chart-campo',  sumBy(rows,'campo'),  CAMPO_COLORS,  total);
-  renderBars('chart-aut',    sumBy(rows,'aut'),    AUT_COLORS,    total);
-  renderBars('chart-cuenta', sumBy(rows,'cuenta'), CUENTA_COLORS, total);
- 
-  // Table
+  renderBars('chart-campo', sumBy(rows,'campo'), CAMPO_COLORS);
+  renderBars('chart-aut',   sumBy(rows,'aut'),   AUT_COLORS);
+  renderBars('chart-cuenta',sumBy(rows,'cuenta'),CUENTA_COLORS);
   renderTable(rows);
 }
  
-// Tab click
-document.querySelectorAll('.tab').forEach(t => {
-  t.addEventListener('click', () => {
-    const type = t.dataset.type, val = t.dataset.val;
-    if (type==='u') fU = val; else fA = val;
-    document.querySelectorAll(`.tab[data-type="${type}"]`).forEach(x => x.classList.remove('on-u','on-a'));
-    t.classList.add(type==='u'?'on-u':'on-a');
-    render();
-  });
-});
- 
 function resetF() {
-  fU = 'all'; fA = 'all';
-  document.querySelectorAll('.tab[data-val="all"]').forEach(t => {
-    t.classList.add(t.dataset.type==='u'?'on-u':'on-a');
-  });
-  document.querySelectorAll('.tab:not([data-val="all"])').forEach(t => t.classList.remove('on-u','on-a'));
+  fS='all';fU='all';fA='all';
+  buildDynamicTabs();
   render();
 }
  
-render();
+function buildDynamicTabs() {
+  const semanas=[...new Set(DATA.map(r=>r.sem))].sort();
+  const unidades=[...new Set(DATA.map(r=>r.unidad))].sort();
+  const auts=[...new Set(DATA.map(r=>r.aut))].sort();
+  buildTabGroup('tabs-semana', semanas, fS, 's', 'on-s');
+  buildTabGroup('tabs-unidad', unidades, fU, 'u', 'on-u');
+  buildTabGroup('tabs-aut',    auts,    fA, 'a', 'on-a');
+}
+ 
+// ── File input ────────────────────────────────────────────────────────────
+document.getElementById('file-input').addEventListener('change', function(e) {
+  const file=e.target.files[0];
+  if(!file) return;
+  const stateEl=document.getElementById('upload-state');
+  stateEl.className='upload-state';
+  stateEl.textContent='Procesando…';
+  const reader=new FileReader();
+  reader.onload=function(ev) {
+    try {
+      const wb=XLSX.read(ev.target.result,{type:'array'});
+      DATA=processExcel(wb);
+      if(!DATA.length) throw new Error('No se encontraron comprobantes');
+      fS='all';fU='all';fA='all';
+      buildDynamicTabs();
+      render();
+      document.getElementById('empty-state').style.display='none';
+      document.getElementById('dashboard').style.display='block';
+      stateEl.className='upload-state ok';
+      stateEl.textContent='✓ '+file.name+' · '+DATA.length+' comprobantes';
+    } catch(err) {
+      stateEl.className='upload-state err';
+      stateEl.textContent='⚠ Error al leer el archivo: '+err.message;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  this.value='';
+});
 </script>
 </body>
 </html>
