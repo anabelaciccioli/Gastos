@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reporte de Gastos — TSDOCS</title>
+<title>Reporte GASTOS AB Agro y AB Energía</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -23,9 +23,16 @@ header p{color:var(--muted);font-size:12px;margin-top:3px;}
 .tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:stretch;flex-wrap:wrap;}
 .tab-group{display:flex;align-items:center;gap:3px;padding:10px 0;margin-right:22px;}
 .tab-group-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-right:8px;white-space:nowrap;}
-.tab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s;white-space:nowrap;font-family:var(--font-b);}
-.tab:hover{background:var(--surface2);color:var(--text);}
+.tab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all .15s;white-space:nowrap;font-family:var(--font-b);}
+.tab:hover{border-color:var(--accent);color:var(--text);background:var(--surface2);}
 .tab.on-s{background:rgba(155,89,182,.18);color:#c39ef8;font-weight:600;}
+.tab-sem{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s;white-space:nowrap;font-family:var(--font-b);}
+.tab-sem:hover{background:var(--surface2);color:var(--text);}
+.tab-sem.on-s{background:rgba(155,89,182,.18);color:#c39ef8;font-weight:600;}
+.tab-sem-total{font-size:10px;font-weight:400;color:var(--muted);margin-top:1px;}
+.tab-sem.on-s .tab-sem-total{color:#9b7fd4;}
+tr.pend-row td{background:rgba(230,126,34,.06);}
+tr.pend-row td:first-child{border-left:2px solid rgba(230,126,34,.5);}
 .tab.on-u{background:rgba(79,142,247,.15);color:#7cb9ff;font-weight:600;}
 .tab.on-a{background:rgba(240,165,0,.14);color:#f0c040;font-weight:600;}
 .tab-info{margin-left:auto;display:flex;align-items:center;gap:10px;padding:10px 0;}
@@ -80,11 +87,15 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
  
 <header>
   <div>
-    <h1>Reporte de Gastos de Campo</h1>
+    <h1>Reporte GASTOS AB Agro y AB Energía</h1>
     <p>Gastos realizados · Plataforma TSDOCS · <span id="header-periodo">Todas las semanas</span></p>
   </div>
   <div class="header-right">
     <span class="upload-state" id="upload-state"></span>
+    <button class="btn-upload" onclick="exportExcel()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Exportar filtrado
+    </button>
     <label class="btn-upload" for="file-input">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       Actualizar con Excel nuevo
@@ -296,22 +307,39 @@ function renderTable(rows){
   const sc=s=>({Verificado:'sv',Analista:'sa',Gerente:'sg',Pivot:'sp'}[s]||'sp');
   let html='';
   sorted.forEach(r=>{
-    html+=`<tr><td>${r.aut}</td><td>${r.prov}</td><td>${r.campo}</td><td class="dim">${r.unidad}</td><td class="dim det-cell" title="${r.detalle}" onclick="this.classList.toggle('expanded')">${r.detalle}</td><td><span class="bs ${sc(r.estado)}"><span class="bd"></span>${r.estado}</span></td><td class="mono" style="text-align:right">${fmt(r.imp)}</td><td class="dim">${r.cuenta}</td><td class="mono dim">${r.sem}</td><td class="mono dim">${r.femis||'—'}</td><td class="mono dim">${r.faut||'—'}</td><td class="mono dim">${r.id||'—'}</td></tr>`;
+    html+=`<tr class="${r.aut==='Pend. de asignar'?'pend-row':''}"><td>${r.aut}</td><td>${r.prov}</td><td>${r.campo}</td><td class="dim">${r.unidad}</td><td class="dim det-cell" title="${r.detalle}" onclick="this.classList.toggle('expanded')">${r.detalle}</td><td><span class="bs ${sc(r.estado)}"><span class="bd"></span>${r.estado}</span></td><td class="mono" style="text-align:right">${fmt(r.imp)}</td><td class="dim">${r.cuenta}</td><td class="mono dim">${r.sem}</td><td class="mono dim">${r.femis||'—'}</td><td class="mono dim">${r.faut||'—'}</td><td class="mono dim">${r.id||'—'}</td></tr>`;
   });
   html+=`<tr class="tot-r"><td colspan="8" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td><td class="mono" style="text-align:right">${fmt(total)}</td><td colspan="3"></td></tr>`;
   tb.innerHTML=html;
 }
  
+function fmtM(n){if(n>=1e6)return'$'+(n/1e6).toFixed(1)+'M';if(n>=1e3)return'$'+(n/1e3).toFixed(0)+'K';return fmt(n);}
+ 
 function buildTabGroup(cid,values,cur,type,cls){
   const el=document.getElementById(cid);
-  let html=`<button class="tab ${cur==='all'?cls:''}" data-type="${type}" data-val="all">Todas</button>`;
-  values.forEach(v=>{html+=`<button class="tab ${cur===v?cls:''}" data-type="${type}" data-val="${v}">${v.length>20?v.slice(0,18)+'…':v}</button>`;});
-  el.innerHTML=html;
-  el.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-    if(type==='s')fS=t.dataset.val;else if(type==='u')fU=t.dataset.val;else fA=t.dataset.val;
-    el.querySelectorAll('.tab').forEach(x=>x.classList.remove(cls));
-    t.classList.add(cls);render();
-  }));
+  if(type==='s'){
+    let html=`<button class="tab-sem ${cur==='all'?cls:''}" data-type="${type}" data-val="all"><span>Todas</span><span class="tab-sem-total">${fmtM(DATA.reduce((s,r)=>s+r.imp,0))}</span></button>`;
+    values.forEach(v=>{
+      const tot=DATA.filter(r=>r.sem===v).reduce((s,r)=>s+r.imp,0);
+      const label=v.replace('/2026','').replace('/2026','');
+      html+=`<button class="tab-sem ${cur===v?cls:''}" data-type="${type}" data-val="${v}"><span>${label}</span><span class="tab-sem-total">${fmtM(tot)}</span></button>`;
+    });
+    el.innerHTML=html;
+    el.querySelectorAll('.tab-sem').forEach(t=>t.addEventListener('click',()=>{
+      fS=t.dataset.val;
+      el.querySelectorAll('.tab-sem').forEach(x=>x.classList.remove(cls));
+      t.classList.add(cls);render();
+    }));
+  } else {
+    let html=`<button class="tab ${cur==='all'?cls:''}" data-type="${type}" data-val="all">Todas</button>`;
+    values.forEach(v=>{html+=`<button class="tab ${cur===v?cls:''}" data-type="${type}" data-val="${v}">${v.length>20?v.slice(0,18)+'…':v}</button>`;});
+    el.innerHTML=html;
+    el.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+      if(type==='u')fU=t.dataset.val;else fA=t.dataset.val;
+      el.querySelectorAll('.tab').forEach(x=>x.classList.remove(cls));
+      t.classList.add(cls);render();
+    }));
+  }
 }
  
 function buildAllTabs(){
@@ -367,6 +395,21 @@ document.getElementById('file-input').addEventListener('change',function(e){
   reader.readAsArrayBuffer(file);
   this.value='';
 });
+ 
+// Export filtered data to Excel
+function exportExcel(){
+  const rows=filtered();
+  if(!rows.length){alert('No hay datos para exportar.');return;}
+  const headers=['Autorizante','Proveedor','Campo','Unidad','Detalle','Estado','Importe','Cuenta','Semana','F. Emisión','F. Autorización','Id'];
+  const data=[headers,...rows.map(r=>[r.aut,r.prov,r.campo,r.unidad,r.detalle,r.estado,r.imp,r.cuenta,r.sem,r.femis||'',r.faut||'',r.id||''])];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  // Column widths
+  ws['!cols']=[{wch:18},{wch:35},{wch:14},{wch:18},{wch:40},{wch:12},{wch:14},{wch:22},{wch:22},{wch:12},{wch:16},{wch:8}];
+  const wb=XLSX.utils.book_new();
+  const label=fS==='all'?'Todos':fS.replace(/\//g,'-');
+  XLSX.utils.book_append_sheet(wb,ws,'Gastos '+label);
+  XLSX.writeFile(wb,'Gastos_ABAgro_'+label+'.xlsx');
+}
  
 // Attach sort listeners once
 document.querySelectorAll('thead th.sortable').forEach(th=>{
