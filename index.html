@@ -7,12 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root {
-  --bg:#0f1117; --surface:#181c27; --surface2:#1e2333; --border:#2a2f42;
-  --accent:#4f8ef7; --green:#2ecc71; --yellow:#f0a500;
-  --text:#e8eaf0; --muted:#7c839e;
-  --font-d:'DM Serif Display',serif; --font-b:'DM Sans',sans-serif; --font-m:'DM Mono',monospace;
-}
+:root{--bg:#0f1117;--surface:#181c27;--surface2:#1e2333;--border:#2a2f42;--accent:#4f8ef7;--green:#2ecc71;--yellow:#f0a500;--text:#e8eaf0;--muted:#7c839e;--font-d:'DM Serif Display',serif;--font-b:'DM Sans',sans-serif;--font-m:'DM Mono',monospace;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:var(--font-b);font-size:14px;line-height:1.5;}
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:22px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
@@ -38,17 +33,18 @@ header p{color:var(--muted);font-size:12px;margin-top:3px;}
 .btn-reset{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;cursor:pointer;padding:4px 10px;border-radius:6px;font-family:var(--font-b);transition:all .15s;}
 .btn-reset:hover{border-color:var(--accent);color:var(--text);}
 main{padding:28px 40px;max-width:1300px;margin:0 auto;}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .kpi.k1::before{background:linear-gradient(90deg,var(--accent),#7cb9ff);}
 .kpi.k2::before{background:linear-gradient(90deg,#9b59b6,#d7a0f8);}
 .kpi.k3::before{background:linear-gradient(90deg,var(--yellow),#ffe0a0);}
 .kpi.k4::before{background:linear-gradient(90deg,var(--green),#a0f8c0);}
+.kpi.k5::before{background:linear-gradient(90deg,#e67e22,#f8c0a0);}
 .kpi-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
 .kpi-value{font-family:var(--font-m);font-size:20px;font-weight:500;color:#fff;}
 .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;}
-.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
 .panel-title{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
 .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
@@ -58,7 +54,7 @@ main{padding:28px 40px;max-width:1300px;margin:0 auto;}
 .bar-amount{font-family:var(--font-m);font-size:11px;color:var(--muted);width:105px;text-align:right;flex-shrink:0;}
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12.5px;}
-thead th{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface);}
+thead th{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface);}thead th.sortable{cursor:pointer;user-select:none;}thead th.sortable:hover{color:var(--text);}thead th.sort-asc::after{content:" ↑";color:var(--accent);}thead th.sort-desc::after{content:" ↓";color:var(--accent);}
 tbody tr{border-bottom:1px solid rgba(42,47,66,.5);transition:background .15s;}
 tbody tr:hover{background:rgba(79,142,247,.04);}
 tbody td{padding:8px 10px;color:var(--text);vertical-align:middle;}
@@ -72,9 +68,12 @@ tbody td{padding:8px 10px;color:var(--text);vertical-align:middle;}
 .sp{background:rgba(85,91,114,.15);color:#aaa;}.sp .bd{background:#888;}
 tr.sub-r td{background:rgba(255,255,255,.02);font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;}
 tr.tot-r td{border-top:2px solid var(--border);font-weight:700;color:#fff;font-size:13px;padding-top:10px;}
+.det-cell{max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:all .2s;}
+.det-cell:hover{color:var(--text);}
+.det-cell.expanded{white-space:normal;max-width:320px;overflow:visible;background:var(--surface2);border-radius:4px;padding:4px 6px;color:var(--text);}
 .empty-msg{text-align:center;color:var(--muted);padding:28px;font-size:13px;}
 footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:8px;}
-@media(max-width:900px){header,main,.tabs-bar{padding:16px;}.kpis{grid-template-columns:1fr 1fr;}.cols3{grid-template-columns:1fr;}}
+@media(max-width:900px){header,main,.tabs-bar{padding:16px;}.kpis{grid-template-columns:1fr 1fr;}.cols2{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -95,18 +94,9 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
 </header>
  
 <div class="tabs-bar">
-  <div class="tab-group">
-    <span class="tab-group-label">Semana</span>
-    <div id="tabs-semana" style="display:flex;gap:3px;align-items:center;"></div>
-  </div>
-  <div class="tab-group">
-    <span class="tab-group-label">Unidad</span>
-    <div id="tabs-unidad" style="display:flex;gap:3px;align-items:center;"></div>
-  </div>
-  <div class="tab-group">
-    <span class="tab-group-label">Autorizante</span>
-    <div id="tabs-aut" style="display:flex;gap:3px;align-items:center;"></div>
-  </div>
+  <div class="tab-group"><span class="tab-group-label">Semana</span><div id="tabs-semana" style="display:flex;gap:3px;align-items:center;"></div></div>
+  <div class="tab-group"><span class="tab-group-label">Unidad</span><div id="tabs-unidad" style="display:flex;gap:3px;align-items:center;"></div></div>
+  <div class="tab-group"><span class="tab-group-label">Autorizante</span><div id="tabs-aut" style="display:flex;gap:3px;align-items:center;"></div></div>
   <div class="tab-info">
     <span class="tab-count" id="tab-count">—</span>
     <button class="btn-reset" onclick="resetF()">✕ Limpiar</button>
@@ -119,131 +109,155 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
     <div class="kpi k2"><div class="kpi-label">Comprobantes</div><div class="kpi-value" id="k-count">—</div><div class="kpi-sub">en el filtro actual</div></div>
     <div class="kpi k3"><div class="kpi-label">Autorizado, pend. pago</div><div class="kpi-value" id="k-analista">—</div><div class="kpi-sub">Estado Analista</div></div>
     <div class="kpi k4"><div class="kpi-label">Pasado a pagar</div><div class="kpi-value" id="k-verif">—</div><div class="kpi-sub">Estado Verificado</div></div>
+    <div class="kpi k5"><div class="kpi-label">Pendiente de autorizar</div><div class="kpi-value" id="k-pend">—</div><div class="kpi-sub">Gerente + Pivot</div></div>
   </div>
-  <div class="cols3">
+  <div class="cols2">
     <div class="panel"><div class="panel-title">Por campo</div><div id="chart-campo"></div></div>
     <div class="panel"><div class="panel-title">Por autorizante</div><div id="chart-aut"></div></div>
+  </div>
+  <div class="cols2">
     <div class="panel"><div class="panel-title">Por cuenta / concepto</div><div id="chart-cuenta"></div></div>
+    <div class="panel"><div class="panel-title">Por proveedor (mayor monto)</div><div id="chart-prov"></div></div>
   </div>
   <div class="panel" style="margin-bottom:18px">
     <div class="panel-title">Detalle de comprobantes</div>
     <div class="table-wrap">
       <table>
-        <thead><tr>
-          <th>Autorizante</th><th>Proveedor</th><th>Campo</th><th>Unidad</th>
-          <th>Detalle</th><th>Estado</th><th style="text-align:right">Importe</th>
-          <th>Cuenta</th><th>Semana</th><th>Id</th>
-        </tr></thead>
+        <thead><tr><th class="sortable" data-col="aut">Autorizante</th><th class="sortable" data-col="prov">Proveedor</th><th class="sortable" data-col="campo">Campo</th><th class="sortable" data-col="unidad">Unidad</th><th>Detalle</th><th class="sortable" data-col="estado">Estado</th><th class="sortable" data-col="imp" style="text-align:right">Importe</th><th class="sortable" data-col="cuenta">Cuenta</th><th class="sortable" data-col="sem">Semana</th><th class="sortable" data-col="femis">F. Emisión</th><th class="sortable" data-col="faut">F. Autorización</th><th>Id</th></tr></thead>
         <tbody id="tbody-det"></tbody>
       </table>
     </div>
   </div>
 </main>
-<footer>TSDOCS · Importes en pesos ($) · Semana determinada por fecha de autorización · Verificado = pasado a pagar · Analista = autorizado, pend. de pago</footer>
+<footer>TSDOCS · Importes en pesos ($) · Semana por fecha de carga · Un comprobante = un Id, estado más avanzado · Verificado = pasado a pagar · Analista = autorizado pend. pago · Gerente = pend. autorizar</footer>
  
 <script>
-// ── Colores ───────────────────────────────────────────────────────────────
-const CUENTA_COLORS = {
-  'Sanidad / Veterinaria':'#2ecc71','Honorarios Asesores Externos':'#4f8ef7',
-  'Fletes':'#f0a500','Maquinaria':'#e67e22','Energía / Servicios':'#9b59b6',
-  'Mantenimiento Equipos':'#e84393','Personal':'#1abc9c','Administración':'#95a5a6'
-};
-const CAMPO_COLORS = {'Winifreda':'#2ecc71','25 de Mayo':'#4f8ef7','Ab Energía':'#9b59b6'};
-const AUT_COLORS   = {'Cristian Amaya':'#4f8ef7','Daniel Barruti':'#f0a500','Sandra Bartucci':'#f06'};
-const AUT_PAL      = ['#4f8ef7','#f0a500','#f06','#2ecc71','#9b59b6','#e84393','#1abc9c'];
+const CUENTA_COLORS={'Sanidad / Veterinaria':'#2ecc71','Honorarios Asesores Externos':'#4f8ef7','Fletes':'#f0a500','Maquinaria':'#e67e22','Energía / Servicios':'#9b59b6','Mantenimiento Equipos':'#e84393','Personal':'#1abc9c','Administración':'#95a5a6','Otros':'#555b72'};
+const CAMPO_COLORS={'Winifreda':'#2ecc71','25 de Mayo':'#4f8ef7','Ab Energía':'#9b59b6'};
+const AUT_COLORS={'Cristian Amaya':'#4f8ef7','Daniel Barruti':'#f0a500','Sandra Bartucci':'#f06','Pend. Facturación':'#e67e22','Pend. de asignar':'#95a5a6','Sin asignar':'#555b72'};
+const AUT_PAL=['#4f8ef7','#f0a500','#f06','#2ecc71','#9b59b6','#e84393','#1abc9c'];
+const fmt=n=>'$'+n.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0});
  
-const fmt = n => '$' + n.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0});
- 
-// ── Datos hardcodeados — semana 01/06–07/06/2026 ─────────────────────────
-let DATA = [
-  {sem:'01/06–07/06/2026', aut:'Cristian Amaya',  prov:'IKES JUAN CARLOS',             campo:'25 de Mayo', unidad:'Feedlot',          detalle:'Flete de hacienda a Frigorífico La Anónima',              estado:'Verificado', imp:2764850,     cuenta:'Fletes',                       id:10771},
-  {sem:'01/06–07/06/2026', aut:'Cristian Amaya',  prov:'EMPRESA EL CEIBO SRL',         campo:'Winifreda',  unidad:'Cría',             detalle:'Pasajes de personal (salida de franco, mayo)',             estado:'Analista',   imp:140000,      cuenta:'Personal',                     id:10799},
-  {sem:'01/06–07/06/2026', aut:'Cristian Amaya',  prov:'AGUADAS ALOMAR SRL',           campo:'Winifreda',  unidad:'Cría',             detalle:'Manta para tanque de Alto Pincén',                        estado:'Analista',   imp:229200,      cuenta:'Maquinaria',                   id:10808},
-  {sem:'01/06–07/06/2026', aut:'Cristian Amaya',  prov:'GABINO RAUL PASCUAL',          campo:'Winifreda',  unidad:'Cría',             detalle:'Vacunas, varillas, raspaje 42 toros, sangrado Brucelosis', estado:'Verificado', imp:10229358.15, cuenta:'Sanidad / Veterinaria',        id:10811},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'GARCIA NICOLAS DANIEL',        campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Agricultura',                                             estado:'Verificado', imp:2887000,     cuenta:'Honorarios Asesores Externos', id:10788},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'GARCIA NICOLAS DANIEL',        campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Agricultura',                                             estado:'Analista',   imp:2887000,     cuenta:'Honorarios Asesores Externos', id:10789},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'HIDRAULICA CVC S.A.S.',        campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía',                                              estado:'Analista',   imp:360607.24,   cuenta:'Energía / Servicios',          id:10790},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'HIDRAULICA CVC S.A.S.',        campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Empresa de maquinaria',                                   estado:'Analista',   imp:200700.25,   cuenta:'Maquinaria',                   id:10791},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'TRANSPORTE EL PAMPERO SRL',    campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía',                                              estado:'Analista',   imp:38962,       cuenta:'Energía / Servicios',          id:10792},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'TRANSPORTE EL PAMPERO SRL',    campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Empresa de maquinaria',                                   estado:'Analista',   imp:37873,       cuenta:'Maquinaria',                   id:10793},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'TRANSPORTE EL PAMPERO SRL',    campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Empresa de maquinaria',                                   estado:'Analista',   imp:57838.67,    cuenta:'Maquinaria',                   id:10794},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'COOP REGIONAL OESTE PAMPEANO', campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Administración (sin asignar a CC operativo)',             estado:'Analista',   imp:60929.31,    cuenta:'Administración',               id:10795},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'BERGONDI MIGUEL ANGEL',        campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Personal (sin asignar a CC operativo)',                   estado:'Analista',   imp:133705,      cuenta:'Personal',                     id:10800},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'AC ELECTRICIDAD SAS',          campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Empresa de maquinaria (generador portátil)',              estado:'Analista',   imp:414515.57,   cuenta:'Maquinaria',                   id:10806},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'TRANSPORTE EL PAMPERO SRL',    campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía',                                              estado:'Analista',   imp:104080.19,   cuenta:'Energía / Servicios',          id:10801},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'TRANSPORTE EL PAMPERO SRL',    campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía',                                              estado:'Analista',   imp:38962,       cuenta:'Energía / Servicios',          id:10817},
-  {sem:'01/06–07/06/2026', aut:'Daniel Barruti',  prov:'GARRO MONICA ALEJANDRA',       campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía (Daniel)',                                      estado:'Analista',   imp:640000,      cuenta:'Energía / Servicios',          id:10838},
-  {sem:'01/06–07/06/2026', aut:'Sandra Bartucci', prov:'GONZALEZ IGNACIO GENARO',      campo:'Ab Energía', unidad:'Planta',           detalle:'Servicio chillers J-501/J-502 (cableado por roedores)',   estado:'Analista',   imp:1650000,     cuenta:'Mantenimiento Equipos',        id:10804},
+// ── DATOS HARDCODEADOS ────────────────────────────────────────────────────
+let DATA=[
+  {sem:'01/06/2026–07/06/2026',femis:'',          faut:'02/06/2026',aut:'Cristian Amaya', prov:'EMPRESA EL CEIBO SRL',                         campo:'Winifreda', unidad:'Cría',          detalle:'Pasajes de personal (salida de franco, mayo)',                   estado:'Analista',  imp:140000,     cuenta:'Personal',id:10799},
+  {sem:'01/06/2026–07/06/2026',femis:'02/06/2026',faut:'03/06/2026',aut:'Cristian Amaya', prov:'AGUADAS ALOMAR SRL',                           campo:'Winifreda', unidad:'Cría',          detalle:'Manta para tanque de Alto Pincén',                          estado:'Analista',  imp:229200,     cuenta:'Maquinaria',id:10808},
+  {sem:'01/06/2026–07/06/2026',femis:'01/06/2026',faut:'03/06/2026',aut:'Cristian Amaya', prov:'GABINO RAUL PASCUAL',                          campo:'Winifreda', unidad:'Cría',          detalle:'Vacunas, varillas, raspaje 42 toros, sangrado Brucelosis',      estado:'Verificado',imp:10229358.15,cuenta:'Sanidad / Veterinaria',id:10811},
+  {sem:'01/06/2026–07/06/2026',femis:'19/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Honorarios asesor agricultura',                                 estado:'Verificado',imp:2887000,    cuenta:'Honorarios Asesores Externos',id:10788},
+  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Honorarios asesor agricultura',                                 estado:'Analista',  imp:2887000,    cuenta:'Honorarios Asesores Externos',id:10789},
+  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',                        campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía',                                                   estado:'Analista',  imp:360607.24,  cuenta:'Energía / Servicios',id:10790},
+  {sem:'01/06/2026–07/06/2026',femis:'14/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Empresa de maquinaria',                                         estado:'Analista',  imp:200700.25,  cuenta:'Maquinaria',id:10791},
+  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'02/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía',                                                   estado:'Analista',  imp:38962,      cuenta:'Energía / Servicios',id:10792,id:10794,id:10817},
+  {sem:'01/06/2026–07/06/2026',femis:'28/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Empresa de maquinaria (repuesto Fontanini)',                     estado:'Analista',  imp:37873,      cuenta:'Maquinaria',id:10793},
+  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'02/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Empresa de maquinaria (cubiertas TBH)',                          estado:'Analista',  imp:57838.67,   cuenta:'Maquinaria'},
+  {sem:'01/06/2026–07/06/2026',femis:'27/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'COOP REGIONAL OESTE PAMPEANO',                 campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Administración (sin asignar a CC operativo)',              estado:'Analista',  imp:60929.31,   cuenta:'Administración',id:10795},
+  {sem:'01/06/2026–07/06/2026',femis:'01/06/2026',faut:'02/06/2026',aut:'Daniel Barruti', prov:'BERGONDI MIGUEL ANGEL',                        campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Personal (sin asignar a CC operativo)',                          estado:'Analista',  imp:133705,     cuenta:'Personal',id:10800},
+  {sem:'01/06/2026–07/06/2026',femis:'02/06/2026',faut:'03/06/2026',aut:'Daniel Barruti', prov:'AC ELECTRICIDAD SAS',                          campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Empresa de maquinaria (generador portátil)',                estado:'Analista',  imp:414515.57,  cuenta:'Maquinaria',id:10806},
+  {sem:'01/06/2026–07/06/2026',femis:'30/05/2026',faut:'05/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía',                                                   estado:'Analista',  imp:104080.19,  cuenta:'Energía / Servicios',id:10801},
+  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'05/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía',                                                   estado:'Analista',  imp:38962,      cuenta:'Energía / Servicios'},
+  {sem:'01/06/2026–07/06/2026',femis:'05/06/2026',faut:'05/06/2026',aut:'Daniel Barruti', prov:'GARRO MONICA ALEJANDRA',                       campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía (Daniel)',                                           estado:'Analista',  imp:640000,     cuenta:'Energía / Servicios',id:10838},
+  {sem:'01/06/2026–07/06/2026',femis:'02/06/2026',faut:'07/06/2026',aut:'Sandra Bartucci',prov:'GONZALEZ IGNACIO GENARO',                      campo:'Ab Energía',unidad:'Planta',       detalle:'Servicio chillers J-501/J-502 (cableado por roedores)',          estado:'Analista',  imp:1650000,    cuenta:'Mantenimiento Equipos',id:10804},
+  {sem:'08/06/2026–14/06/2026',femis:'01/06/2026',faut:'08/06/2026',aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Válvulas compresor camión volcador (fontanini)',              estado:'Analista',  imp:127399.84,  cuenta:'Maquinaria',id:10841},
+  {sem:'08/06/2026–14/06/2026',femis:'05/06/2026',faut:'08/06/2026',aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Reparación, armado y reposición partes de hidrolavadora taller',estado:'Verificado',imp:945737.96,  cuenta:'Mantenimiento Equipos',id:10842},
+  {sem:'08/06/2026–14/06/2026',femis:'08/06/2026',faut:'08/06/2026',aut:'Daniel Barruti', prov:'VALDEZ GABRIEL ALFONSO',                       campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Servicios casa Rossi',                                           estado:'Verificado',imp:80467,      cuenta:'Personal',id:10847},
+  {sem:'08/06/2026–14/06/2026',femis:'04/06/2026',faut:'08/06/2026',aut:'Daniel Barruti', prov:'PRIETO ALICIA INES',                           campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Alquiler casa Rossi',                                            estado:'Verificado',imp:770000,     cuenta:'Personal',id:10848},
+  {sem:'08/06/2026–14/06/2026',femis:'01/06/2026',faut:'',          aut:'Pend. de asignar',prov:'BARTUCCI SANDRA LORENA',                      campo:'Ab Energía',unidad:'Planta',       detalle:'Ab Energía',                                                   estado:'Gerente',   imp:3903886,    cuenta:'Energía / Servicios',id:10840},
+  {sem:'08/06/2026–14/06/2026',femis:'19/05/2026',faut:'',          aut:'Pend. de asignar',prov:'SALOMONE JULIO Y SALOMONE MARCELA E. S.H',   campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',                                                    estado:'Gerente',   imp:458000,     cuenta:'Otros',id:10843},
+  {sem:'08/06/2026–14/06/2026',femis:'04/06/2026',faut:'',          aut:'Pend. de asignar',prov:'TRANSPORTE EL PAMPERO SRL',                   campo:'Ab Energía',unidad:'Planta',       detalle:'Ab Energía',                                                   estado:'Gerente',   imp:68197.27,   cuenta:'Energía / Servicios',id:10844},
+  {sem:'08/06/2026–14/06/2026',femis:'05/06/2026',faut:'',          aut:'Pend. de asignar',prov:'AMOROS EMANUEL',                              campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',                                                    estado:'Gerente',   imp:3678400,    cuenta:'Otros',id:10845},
+  {sem:'08/06/2026–14/06/2026',femis:'08/06/2026',faut:'',          aut:'Pend. de asignar',prov:'THOME JUAN JOSE',                             campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',                                                    estado:'Gerente',   imp:3109312.8,  cuenta:'Otros',id:10846},
+  {sem:'08/06/2026–14/06/2026',femis:'08/06/2026',faut:'',          aut:'Pend. de asignar',prov:'GABRIEL HORACIO FRIDEL',                      campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',                                                    estado:'Gerente',   imp:1405296.06, cuenta:'Otros',id:10849},
+  {sem:'08/06/2026–14/06/2026',femis:'02/06/2026',faut:'',          aut:'Pend. de asignar',prov:'SPES VIATOR S.A.',                            campo:'Ab Energía',unidad:'Planta',       detalle:'Ab Energía (EUR × 1700)',                                  estado:'Gerente',   imp:2890000,    cuenta:'Energía / Servicios',id:10850},
+  {sem:'08/06/2026–14/06/2026',femis:'06/06/2026',faut:'',          aut:'Pend. de asignar',prov:'TRANSPORTE EL PAMPERO SRL',                   campo:'Ab Energía',unidad:'Planta',       detalle:'Ab Energía',                                                   estado:'Gerente',   imp:52550.3,    cuenta:'Energía / Servicios',id:10851,id:10852},
+  {sem:'08/06/2026–14/06/2026',femis:'06/06/2026',faut:'',          aut:'Pend. de asignar',prov:'TRANSPORTE EL PAMPERO SRL',                   campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',                                                    estado:'Gerente',   imp:201620.51,  cuenta:'Otros'},
+  {sem:'08/06/2026–14/06/2026',femis:'08/06/2026',faut:'',          aut:'Pend. de asignar',prov:'GARCIA HECTOR FABIAN',                        campo:'Ab Energía',unidad:'Planta',       detalle:'Ab Energía',                                                   estado:'Gerente',   imp:2783000,    cuenta:'Energía / Servicios',id:10853},
 ];
  
-// ── Estado filtros ────────────────────────────────────────────────────────
-let fS='all', fU='all', fA='all';
+let fS='all',fU='all',fA='all',sortCol='sem',sortDir=1;
  
-// ── Procesar Excel subido ─────────────────────────────────────────────────
-const ESTADO_ORDER = {Verificado:4,Analista:3,Gerente:2,Pivot:1};
+// ── Procesador Excel ──────────────────────────────────────────────────────
+const ESTADO_ORDER={Verificado:4,Analista:3,Gerente:2,Pivot:1};
  
-function weekLabel(v) {
-  if (!v) return 'Sin fecha';
-  let d;
-  if (typeof v==='number') d=new Date(Math.round((v-25569)*86400*1000));
-  else if (typeof v==='string' && v.match(/\d{4}-\d{2}-\d{2}/)) d=new Date(v+'T12:00:00');
-  else return 'Sin fecha';
-  const day=d.getDay()||7;
-  const mon=new Date(d); mon.setDate(d.getDate()-day+1);
+function weekLabel(dt){
+  if(!dt)return'Sin fecha';
+  if(typeof dt==='string'){try{dt=new Date(dt);}catch{return'Sin fecha';}}
+  if(typeof dt==='number'){dt=new Date(Math.round((dt-25569)*86400*1000));}
+  if(!(dt instanceof Date)||isNaN(dt))return'Sin fecha';
+  const day=dt.getDay()||7; // 1=Mon
+  const mon=new Date(dt); mon.setDate(dt.getDate()-(day-1));
   const sun=new Date(mon); sun.setDate(mon.getDate()+6);
   const f=x=>String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0')+'/'+x.getFullYear();
   return f(mon)+'–'+f(sun);
 }
  
-function mapCC(det, soc) {
+function fixStr(s){
+  return(s||'').replace(/Ã³/g,'ó').replace(/Ã¡/g,'á').replace(/Ã©/g,'é').replace(/Ã±/g,'ñ')
+    .replace(/Ã"/g,'Ó').replace(/Ã‰/g,'É').replace(/Ã/g,'Á').replace(/Â/g,'').replace(/â€"/g,'–').trim();
+}
+ 
+function mapCC(det,soc){
   const d=(det||'').toUpperCase();
-  if (/FEED.?LOT|25.FEED/i.test(d))  return {campo:'25 de Mayo',unidad:'Feedlot'};
-  if (/WINIFREDA|W-/i.test(d))       return {campo:'Winifreda', unidad:'Cría'};
-  if (/AB.ENERG/i.test(d)||soc==='ABEN') return {campo:'Ab Energía',unidad:'Planta'};
-  if (/EMPRESA.MAQ/i.test(d))        return {campo:'25 de Mayo',unidad:'Agricultura'};
-  if (/25.ADMIN|25.PERSONAL/i.test(d)) return {campo:'25 de Mayo',unidad:'A distribuir a CC'};
-  if (soc==='ABEN') return {campo:'Ab Energía',unidad:'Planta'};
-  return {campo:'25 de Mayo',unidad:'A distribuir a CC'};
+  if(/FEED|25-FEED/.test(d))return['25 de Mayo','Feedlot'];
+  if(/WINIFREDA|W-/.test(d))return['Winifreda','Cría'];
+  if(/AB.ENERG/.test(d)||soc==='ABEN')return['Ab Energía','Planta'];
+  if(/EMPRESA.MAQ|25-EMPRESA/.test(d))return['25 de Mayo','Agricultura'];
+  if(soc==='ABEN')return['Ab Energía','Planta'];
+  return['25 de Mayo','A distribuir a CC'];
 }
  
-function mapCuenta(prov,det,unidad) {
-  const d=(det||'').toLowerCase(), p=(prov||'').toLowerCase();
-  if (/vacuna|brucelosis|toro|raspaje|veterina|sanidad/i.test(d)) return 'Sanidad / Veterinaria';
-  if (/garcia nicolas/i.test(p)||/honorario|asesor/i.test(d))    return 'Honorarios Asesores Externos';
-  if (/flete|frigorifico/i.test(d))   return 'Fletes';
-  if (/chiller|j-50|cableado.*roedor/i.test(d)) return 'Mantenimiento Equipos';
-  if (/maquinaria|generador|cubierta|repuesto/i.test(d)) return 'Maquinaria';
-  if (/energi|ab.energ/i.test(d)||unidad==='Planta') return 'Energía / Servicios';
-  if (/personal|pasaje|franco/i.test(d)) return 'Personal';
-  if (/admin/i.test(d)) return 'Administración';
-  return 'Otros';
+function mapCuenta(prov,det,unidad){
+  const d=(det||'').toLowerCase(),p=(prov||'').toLowerCase();
+  if(/vacuna|brucelosis|toro|raspaje|veterina|sanidad/.test(d))return'Sanidad / Veterinaria';
+  if(/garcia nicolas/.test(p)||/honorario|asesor/.test(d))return'Honorarios Asesores Externos';
+  if(/flete|frigorifico/.test(d))return'Fletes';
+  if(/chiller|j-50|cableado|roedor|hidrolavadora|reparaci/.test(d))return'Mantenimiento Equipos';
+  if(/maquinaria|generador|cubierta|repuesto|volcador|compresor|válvula|valvula/.test(d))return'Maquinaria';
+  if(/energi/.test(d)||unidad==='Planta')return'Energía / Servicios';
+  if(/personal|pasaje|franco|casa rossi|alquiler|servicio/.test(d))return'Personal';
+  if(/admin/.test(d))return'Administración';
+  return'Otros';
 }
  
-function processExcel(wb) {
-  let sName = wb.SheetNames.find(n=>/tsdocs|raw|crudo|reporte tsd/i.test(n));
-  if (!sName) sName = wb.SheetNames[wb.SheetNames.length-1];
-  const ws = wb.Sheets[sName];
-  const rows = XLSX.utils.sheet_to_json(ws,{defval:''});
+function processExcel(wb){
+  let sName=wb.SheetNames.find(n=>/tsdocs/i.test(n))||wb.SheetNames[wb.SheetNames.length-1];
+  const ws=wb.Sheets[sName];
+  const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
   const byId={};
   rows.forEach(r=>{
-    const id=r['Id Documento']||r['Id_Documento']||r['id'];
-    if(!id) return;
-    const estado=r['Estado del Workflow']||r['Estado']||'';
+    const id=r['Id Documento']||r['Id_Documento'];
+    if(!id)return;
+    const estado=r['Estado del Workflow']||'';
     const ord=ESTADO_ORDER[estado]||0;
-    if(!byId[id]||(ESTADO_ORDER[byId[id].estado]||0)<ord){
-      byId[id]={id,prov:r['Razón Social']||r['RazÃ³n Social']||'',soc:r['Sociedad']||'',
-        aut:r['Autorizante']||'Sin asignar',det:r['Detalle']||'',estado,
-        imp:parseFloat(r['Importe'])||0,faut:r['Fecha de autorizacion']||r['Fecha de autorización']||''};
+    const fcarga=r['Fecha de Carga']||'';
+    if(!byId[id]){
+      byId[id]={row:r,ord,fcarga_min:fcarga};
+    } else {
+      if(ord>byId[id].ord){byId[id].row=r;byId[id].ord=ord;}
+      if(fcarga&&(!byId[id].fcarga_min||fcarga<byId[id].fcarga_min))byId[id].fcarga_min=fcarga;
     }
   });
   const result=[];
-  Object.values(byId).forEach(r=>{
-    const {campo,unidad}=mapCC(r.det,r.soc);
-    const cuenta=mapCuenta(r.prov,r.det,unidad);
-    const sem=weekLabel(r.faut);
-    const det=(r.det||'').replace(/=CC:[^=]*/g,'').replace(/\s+/g,' ').trim();
-    if(!AUT_COLORS[r.aut]) AUT_COLORS[r.aut]=AUT_PAL[Object.keys(AUT_COLORS).length%AUT_PAL.length];
-    result.push({id:r.id,prov:r.prov,aut:r.aut,campo,unidad,detalle:det,estado:r.estado,imp:r.imp,cuenta,sem});
+  Object.entries(byId).forEach(([id,info])=>{
+    const r=info.row;
+    const prov=fixStr(r['Razón Social']||r['RazÃ³n Social']||'');
+    const soc=r['Sociedad']||'';
+    const aut=r['Autorizante']||'Pend. de asignar';
+    const det=fixStr(r['Detalle']||'');
+    const estado=r['Estado del Workflow']||'';
+    const moneda=r['Moneda']||'PESO';
+    const cotiz=parseFloat(r['Cotizacion'])||1;
+    const imp_raw=parseFloat((r['Importe']||'0').toString().replace(',','.'))||0;
+    const imp=Math.round((moneda!=='PESO'?imp_raw*cotiz:imp_raw)*100)/100;
+    const fEmisRaw=r['Fecha de emisión']||r['Fecha de emisiÃ³n']||'';
+    const fAutRaw=r['Fecha de autorizacion']||'';
+    function fmtD(v){if(!v)return'';if(typeof v==='string'&&v.match(/\d{4}-\d{2}-\d{2}/)){const p=v.slice(0,10).split('-');return p[2]+'/'+p[1]+'/'+p[0];}if(v instanceof Date||typeof v==='object'){try{const d=new Date(v);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();}catch{return'';}}return'';}
+    const femis=fmtD(fEmisRaw); const faut_str=fmtD(fAutRaw);
+    const [campo,unidad]=mapCC(det,soc);
+    const cuenta=mapCuenta(prov,det,unidad);
+    const sem=weekLabel(info.fcarga_min);
+    const detClean=det.replace(/=CC:[^=]*/g,'').replace(/\s+/g,' ').trim()||'Sin detalle';
+    if(!AUT_COLORS[aut])AUT_COLORS[aut]=AUT_PAL[Object.keys(AUT_COLORS).length%AUT_PAL.length];
+    result.push({id,prov,aut,campo,unidad,detalle:detClean,estado,imp,cuenta,sem,femis,faut:faut_str});
   });
   return result;
 }
@@ -252,50 +266,51 @@ function processExcel(wb) {
 function filtered(){return DATA.filter(r=>(fS==='all'||r.sem===fS)&&(fU==='all'||r.unidad===fU)&&(fA==='all'||r.aut===fA));}
 function sumBy(rows,key){const m={};rows.forEach(r=>{m[r[key]]=(m[r[key]]||0)+r.imp;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
  
-function renderBars(id,entries,colorMap){
+const PROV_COLORS={};
+const PROV_PAL=['#4f8ef7','#f0a500','#2ecc71','#e84393','#9b59b6','#e67e22','#1abc9c','#f06','#95a5a6','#3498db','#e74c3c','#27ae60'];
+function provColor(k){if(!PROV_COLORS[k])PROV_COLORS[k]=PROV_PAL[Object.keys(PROV_COLORS).length%PROV_PAL.length];return PROV_COLORS[k];}
+ 
+function renderBars(id,entries,colorMap,topN){
   const el=document.getElementById(id);
   if(!entries.length){el.innerHTML='<div class="empty-msg">Sin datos</div>';return;}
-  const max=entries[0][1];
-  el.innerHTML=entries.map(([k,v])=>`<div class="bar-row">
-    <div class="bar-label" style="width:130px">${k}</div>
-    <div class="bar-track"><div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%;background:${colorMap[k]||'#4f8ef7'}"></div></div>
-    <div class="bar-amount">${fmt(v)}</div></div>`).join('');
+  const list=topN?entries.slice(0,topN):entries;
+  const max=list[0][1];
+  el.innerHTML=list.map(([k,v])=>`<div class="bar-row"><div class="bar-label" style="width:130px" title="${k}">${k.length>18?k.slice(0,17)+'…':k}</div><div class="bar-track"><div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%;background:${colorMap&&colorMap[k]?colorMap[k]:provColor(k)}"></div></div><div class="bar-amount">${fmt(v)}</div></div>`).join('');
 }
  
 function renderTable(rows){
   const tb=document.getElementById('tbody-det');
   if(!rows.length){tb.innerHTML=`<tr><td colspan="10" class="empty-msg">No hay comprobantes para esta selección.</td></tr>`;return;}
-  const total=rows.reduce((s,r)=>s+r.imp,0);
-  const sc=s=>({Verificado:'sv',Analista:'sa',Gerente:'sg',Pivot:'sp'}[s]||'sp');
-  const groups={};
-  rows.forEach(r=>{(groups[r.aut]=groups[r.aut]||[]).push(r);});
-  let html='';
-  Object.entries(groups).forEach(([aut,gr])=>{
-    const sub=gr.reduce((s,r)=>s+r.imp,0);
-    gr.forEach((r,i)=>{html+=`<tr>
-      <td style="${i===0?'font-weight:600;color:#fff':''}">${i===0?aut:''}</td>
-      <td>${r.prov}</td><td>${r.campo}</td><td class="dim">${r.unidad}</td>
-      <td class="dim" style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.detalle}</td>
-      <td><span class="bs ${sc(r.estado)}"><span class="bd"></span>${r.estado}</span></td>
-      <td class="mono" style="text-align:right">${fmt(r.imp)}</td>
-      <td class="dim">${r.cuenta}</td><td class="mono dim">${r.sem}</td><td class="mono dim">${r.id}</td>
-    </tr>`;});
-    html+=`<tr class="sub-r"><td colspan="6" style="text-align:right;padding-right:8px">Subtotal ${aut}</td><td class="mono" style="text-align:right">${fmt(sub)}</td><td colspan="3"></td></tr>`;
+  // Sort
+  const sorted=[...rows].sort((a,b)=>{
+    let av=a[sortCol],bv=b[sortCol];
+    if(sortCol==='imp'){return(av-bv)*sortDir;}
+    return String(av||'').localeCompare(String(bv||''),'es')*sortDir;
   });
-  html+=`<tr class="tot-r"><td colspan="6" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td><td class="mono" style="text-align:right">${fmt(total)}</td><td colspan="3"></td></tr>`;
+  // Update header arrows
+  document.querySelectorAll('thead th.sortable').forEach(th=>{
+    th.classList.remove('sort-asc','sort-desc');
+    if(th.dataset.col===sortCol)th.classList.add(sortDir===1?'sort-asc':'sort-desc');
+  });
+  const total=sorted.reduce((s,r)=>s+r.imp,0);
+  const sc=s=>({Verificado:'sv',Analista:'sa',Gerente:'sg',Pivot:'sp'}[s]||'sp');
+  let html='';
+  sorted.forEach(r=>{
+    html+=`<tr><td>${r.aut}</td><td>${r.prov}</td><td>${r.campo}</td><td class="dim">${r.unidad}</td><td class="dim det-cell" title="${r.detalle}" onclick="this.classList.toggle('expanded')">${r.detalle}</td><td><span class="bs ${sc(r.estado)}"><span class="bd"></span>${r.estado}</span></td><td class="mono" style="text-align:right">${fmt(r.imp)}</td><td class="dim">${r.cuenta}</td><td class="mono dim">${r.sem}</td><td class="mono dim">${r.femis||'—'}</td><td class="mono dim">${r.faut||'—'}</td><td class="mono dim">${r.id||'—'}</td></tr>`;
+  });
+  html+=`<tr class="tot-r"><td colspan="8" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td><td class="mono" style="text-align:right">${fmt(total)}</td><td colspan="3"></td></tr>`;
   tb.innerHTML=html;
 }
  
 function buildTabGroup(cid,values,cur,type,cls){
   const el=document.getElementById(cid);
   let html=`<button class="tab ${cur==='all'?cls:''}" data-type="${type}" data-val="all">Todas</button>`;
-  values.forEach(v=>{html+=`<button class="tab ${cur===v?cls:''}" data-type="${type}" data-val="${v}">${v.length>18?v.slice(0,16)+'…':v}</button>`;});
+  values.forEach(v=>{html+=`<button class="tab ${cur===v?cls:''}" data-type="${type}" data-val="${v}">${v.length>20?v.slice(0,18)+'…':v}</button>`;});
   el.innerHTML=html;
   el.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-    if(type==='s')fS=t.dataset.val; else if(type==='u')fU=t.dataset.val; else fA=t.dataset.val;
+    if(type==='s')fS=t.dataset.val;else if(type==='u')fU=t.dataset.val;else fA=t.dataset.val;
     el.querySelectorAll('.tab').forEach(x=>x.classList.remove(cls));
-    t.classList.add(cls);
-    render();
+    t.classList.add(cls);render();
   }));
 }
  
@@ -310,39 +325,40 @@ function render(){
   const total=rows.reduce((s,r)=>s+r.imp,0);
   const analista=rows.filter(r=>r.estado==='Analista').reduce((s,r)=>s+r.imp,0);
   const verif=rows.filter(r=>r.estado==='Verificado').reduce((s,r)=>s+r.imp,0);
+  const pend=rows.filter(r=>r.estado==='Gerente'||r.estado==='Pivot').reduce((s,r)=>s+r.imp,0);
   document.getElementById('k-total').textContent=fmt(total);
   document.getElementById('k-count').textContent=rows.length;
   document.getElementById('k-docs').textContent=rows.length+' comprobante'+(rows.length!==1?'s':'');
   document.getElementById('k-analista').textContent=fmt(analista);
   document.getElementById('k-verif').textContent=fmt(verif);
+  document.getElementById('k-pend').textContent=fmt(pend);
   document.getElementById('tab-count').textContent=rows.length+' comp. · '+fmt(total);
   document.getElementById('header-periodo').textContent=fS==='all'?'Todas las semanas':'Semana '+fS;
-  renderBars('chart-campo', sumBy(rows,'campo'), CAMPO_COLORS);
-  renderBars('chart-aut',   sumBy(rows,'aut'),   AUT_COLORS);
+  renderBars('chart-campo',sumBy(rows,'campo'),CAMPO_COLORS);
   renderBars('chart-cuenta',sumBy(rows,'cuenta'),CUENTA_COLORS);
+  renderBars('chart-aut',sumBy(rows,'aut'),AUT_COLORS);
+  renderBars('chart-prov',sumBy(rows,'prov'),null,10);
   renderTable(rows);
 }
  
 function resetF(){fS='all';fU='all';fA='all';buildAllTabs();render();}
  
-// ── File upload ───────────────────────────────────────────────────────────
 document.getElementById('file-input').addEventListener('change',function(e){
-  const file=e.target.files[0]; if(!file)return;
+  const file=e.target.files[0];if(!file)return;
   const st=document.getElementById('upload-state');
-  st.className='upload-state'; st.textContent='Procesando…';
+  st.className='upload-state';st.textContent='Procesando…';
   const reader=new FileReader();
   reader.onload=function(ev){
     try{
-      const wb=XLSX.read(ev.target.result,{type:'array'});
+      const wb=XLSX.read(ev.target.result,{type:'array',cellDates:true});
       const newData=processExcel(wb);
-      if(!newData.length) throw new Error('No se encontraron comprobantes');
-      // Combinar: reemplazar semanas que ya vienen en el Excel, conservar el resto
+      if(!newData.length)throw new Error('No se encontraron comprobantes');
       const semsNuevas=new Set(newData.map(r=>r.sem));
       DATA=DATA.filter(r=>!semsNuevas.has(r.sem)).concat(newData);
       fS='all';fU='all';fA='all';
       buildAllTabs();render();
       st.className='upload-state ok';
-      st.textContent='✓ '+file.name+' · '+DATA.length+' comprobantes totales';
+      st.textContent='✓ '+file.name+' · '+DATA.length+' comp. totales';
     }catch(err){
       st.className='upload-state err';
       st.textContent='⚠ Error: '+err.message;
@@ -352,7 +368,14 @@ document.getElementById('file-input').addEventListener('change',function(e){
   this.value='';
 });
  
-// ── Init ──────────────────────────────────────────────────────────────────
+// Attach sort listeners once
+document.querySelectorAll('thead th.sortable').forEach(th=>{
+  th.addEventListener('click',()=>{
+    if(sortCol===th.dataset.col){sortDir*=-1;}else{sortCol=th.dataset.col;sortDir=1;}
+    renderTable(filtered());
+  });
+});
+ 
 buildAllTabs();
 render();
 </script>
