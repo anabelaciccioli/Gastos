@@ -320,6 +320,88 @@
     padding-top: 12px;
   }
 
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+  }
+
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .filter-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+  }
+
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    transition: all .18s;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .filter-chip:hover { border-color: var(--accent); color: var(--text); }
+
+  .filter-chip.active {
+    background: rgba(79,142,247,.15);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .filter-chip.active-aut {
+    background: rgba(240,165,0,.12);
+    border-color: var(--yellow);
+    color: #fff;
+  }
+
+  .filter-results {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .filter-reset {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color .15s;
+    font-family: var(--font-body);
+  }
+  .filter-reset:hover { color: var(--text); }
+
+  /* hide rows */
+  tr.hidden { display: none; }
+
   /* ── FOOTER ── */
   footer {
     text-align: center;
@@ -495,6 +577,26 @@
     <div id="bars-cuenta"></div>
   </div>
 
+  <!-- FILTER BAR -->
+  <div class="filter-bar" id="filter-bar">
+    <span class="filter-label">Unidad</span>
+    <button class="filter-chip active" data-type="unidad" data-val="all">Todas</button>
+    <button class="filter-chip" data-type="unidad" data-val="Feedlot">Feedlot</button>
+    <button class="filter-chip" data-type="unidad" data-val="Cría">Cría</button>
+    <button class="filter-chip" data-type="unidad" data-val="Agricultura">Agricultura</button>
+    <button class="filter-chip" data-type="unidad" data-val="Planta">Planta</button>
+    <button class="filter-chip" data-type="unidad" data-val="A distribuir a CC">A distribuir</button>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Autorizante</span>
+    <button class="filter-chip active" data-type="aut" data-val="all">Todos</button>
+    <button class="filter-chip" data-type="aut" data-val="Cristian Amaya">C. Amaya</button>
+    <button class="filter-chip" data-type="aut" data-val="Daniel Barruti">D. Barruti</button>
+    <button class="filter-chip" data-type="aut" data-val="Sandra Bartucci">S. Bartucci</button>
+    <div class="filter-sep"></div>
+    <span class="filter-results" id="filter-results">18 comprobantes · $22.875.581</span>
+    <button class="filter-reset" id="filter-reset" onclick="resetFilters()">✕ Limpiar</button>
+  </div>
+
   <!-- TABLA DETALLE -->
   <div class="panel" style="margin-bottom:24px">
     <div class="panel-title">Detalle de comprobantes — ordenado por autorizante</div>
@@ -558,40 +660,36 @@
 <script>
 const TOTAL = 22875581.38;
 
-// ── DATOS ─────────────────────────────────────────────────────────────────
 const detalle = [
-  // Cristian Amaya
-  {aut:'Cristian Amaya', prov:'IKES JUAN CARLOS',       campo:'25 de Mayo', unidad:'Feedlot',       detalle:'Flete de hacienda a Frigorífico La Anónima',          estado:'Verificado', importe:2764850,      cuenta:'Fletes',                    id:10771},
-  {aut:'Cristian Amaya', prov:'EMPRESA EL CEIBO SRL',   campo:'Winifreda',  unidad:'Cría',          detalle:'Pasajes de personal (salida de franco, mayo)',         estado:'Analista',   importe:140000,       cuenta:'Personal',                  id:10799},
-  {aut:'Cristian Amaya', prov:'AGUADAS ALOMAR SRL',     campo:'Winifreda',  unidad:'Cría',          detalle:'Manta para tanque de Alto Pincén',                    estado:'Analista',   importe:229200,       cuenta:'Maquinaria',                id:10808},
-  {aut:'Cristian Amaya', prov:'GABINO RAUL PASCUAL',    campo:'Winifreda',  unidad:'Cría',          detalle:'Vacunas, varillas, raspaje 42 toros, sangrado Brucelosis', estado:'Verificado', importe:10229358.15, cuenta:'Sanidad / Veterinaria',    id:10811},
-  // Daniel Barruti
-  {aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',  campo:'25 de Mayo', unidad:'Agricultura',   detalle:'Agricultura',                                         estado:'Verificado', importe:2887000,      cuenta:'Honorarios Asesores Externos', id:10788},
-  {aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',  campo:'25 de Mayo', unidad:'Agricultura',   detalle:'Agricultura',                                         estado:'Analista',   importe:2887000,      cuenta:'Honorarios Asesores Externos', id:10789},
-  {aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',  campo:'Ab Energía', unidad:'Planta',        detalle:'AB Energía',                                          estado:'Analista',   importe:360607.24,    cuenta:'Energía / Servicios',       id:10790},
-  {aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',  campo:'25 de Mayo', unidad:'Agricultura',   detalle:'Empresa de maquinaria',                               estado:'Analista',   importe:200700.25,    cuenta:'Maquinaria',                id:10791},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'Ab Energía', unidad:'Planta',     detalle:'AB Energía',                                          estado:'Analista',   importe:38962,        cuenta:'Energía / Servicios',       id:10792},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'25 de Mayo', unidad:'Agricultura',detalle:'Empresa de maquinaria',                               estado:'Analista',   importe:37873,        cuenta:'Maquinaria',                id:10793},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'25 de Mayo', unidad:'Agricultura',detalle:'Empresa de maquinaria',                               estado:'Analista',   importe:57838.67,     cuenta:'Maquinaria',                id:10794},
-  {aut:'Daniel Barruti', prov:'COOP REGIONAL OESTE PAMPEANO', campo:'25 de Mayo', unidad:'A distribuir a CC', detalle:'Administración (sin asignar a CC operativo)', estado:'Analista', importe:60929.31,   cuenta:'Administración',             id:10795},
-  {aut:'Daniel Barruti', prov:'BERGONDI MIGUEL ANGEL',  campo:'25 de Mayo', unidad:'A distribuir a CC', detalle:'Personal (sin asignar a CC operativo)',           estado:'Analista',   importe:133705,       cuenta:'Personal',                  id:10800},
-  {aut:'Daniel Barruti', prov:'AC ELECTRICIDAD SAS',    campo:'25 de Mayo', unidad:'Agricultura',   detalle:'Empresa de maquinaria (generador portátil)',          estado:'Analista',   importe:414515.57,    cuenta:'Maquinaria',                id:10806},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'Ab Energía', unidad:'Planta',     detalle:'AB Energía',                                          estado:'Analista',   importe:104080.19,    cuenta:'Energía / Servicios',       id:10801},
-  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'Ab Energía', unidad:'Planta',     detalle:'AB Energía',                                          estado:'Analista',   importe:38962,        cuenta:'Energía / Servicios',       id:10817},
-  {aut:'Daniel Barruti', prov:'GARRO MONICA ALEJANDRA', campo:'Ab Energía', unidad:'Planta',        detalle:'AB Energía (Daniel)',                                 estado:'Analista',   importe:640000,       cuenta:'Energía / Servicios',       id:10838},
-  // Sandra Bartucci
-  {aut:'Sandra Bartucci', prov:'GONZALEZ IGNACIO GENARO', campo:'Ab Energía', unidad:'Planta',      detalle:'Servicio chillers J-501/J-502 (cableado por roedores)', estado:'Analista', importe:1650000,      cuenta:'Mantenimiento Equipos',     id:10804},
+  {aut:'Cristian Amaya', prov:'IKES JUAN CARLOS',       campo:'25 de Mayo', unidad:'Feedlot',         detalle:'Flete de hacienda a Frigorífico La Anónima',               estado:'Verificado', importe:2764850,      cuenta:'Fletes',                       id:10771},
+  {aut:'Cristian Amaya', prov:'EMPRESA EL CEIBO SRL',   campo:'Winifreda',  unidad:'Cría',            detalle:'Pasajes de personal (salida de franco, mayo)',              estado:'Analista',   importe:140000,       cuenta:'Personal',                     id:10799},
+  {aut:'Cristian Amaya', prov:'AGUADAS ALOMAR SRL',     campo:'Winifreda',  unidad:'Cría',            detalle:'Manta para tanque de Alto Pincén',                         estado:'Analista',   importe:229200,       cuenta:'Maquinaria',                   id:10808},
+  {aut:'Cristian Amaya', prov:'GABINO RAUL PASCUAL',    campo:'Winifreda',  unidad:'Cría',            detalle:'Vacunas, varillas, raspaje 42 toros, sangrado Brucelosis',  estado:'Verificado', importe:10229358.15,  cuenta:'Sanidad / Veterinaria',        id:10811},
+  {aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',  campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Agricultura',                                              estado:'Verificado', importe:2887000,      cuenta:'Honorarios Asesores Externos', id:10788},
+  {aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',  campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Agricultura',                                              estado:'Analista',   importe:2887000,      cuenta:'Honorarios Asesores Externos', id:10789},
+  {aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',  campo:'Ab Energía', unidad:'Planta',          detalle:'AB Energía',                                               estado:'Analista',   importe:360607.24,    cuenta:'Energía / Servicios',          id:10790},
+  {aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',  campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Empresa de maquinaria',                                    estado:'Analista',   importe:200700.25,    cuenta:'Maquinaria',                   id:10791},
+  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'Ab Energía', unidad:'Planta',       detalle:'AB Energía',                                               estado:'Analista',   importe:38962,        cuenta:'Energía / Servicios',          id:10792},
+  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'25 de Mayo', unidad:'Agricultura',  detalle:'Empresa de maquinaria',                                    estado:'Analista',   importe:37873,        cuenta:'Maquinaria',                   id:10793},
+  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'25 de Mayo', unidad:'Agricultura',  detalle:'Empresa de maquinaria',                                    estado:'Analista',   importe:57838.67,     cuenta:'Maquinaria',                   id:10794},
+  {aut:'Daniel Barruti', prov:'COOP REGIONAL OESTE PAMPEANO', campo:'25 de Mayo', unidad:'A distribuir a CC', detalle:'Administración (sin asignar a CC operativo)',     estado:'Analista',   importe:60929.31,     cuenta:'Administración',               id:10795},
+  {aut:'Daniel Barruti', prov:'BERGONDI MIGUEL ANGEL',  campo:'25 de Mayo', unidad:'A distribuir a CC', detalle:'Personal (sin asignar a CC operativo)',                estado:'Analista',   importe:133705,       cuenta:'Personal',                     id:10800},
+  {aut:'Daniel Barruti', prov:'AC ELECTRICIDAD SAS',    campo:'25 de Mayo', unidad:'Agricultura',     detalle:'Empresa de maquinaria (generador portátil)',               estado:'Analista',   importe:414515.57,    cuenta:'Maquinaria',                   id:10806},
+  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'Ab Energía', unidad:'Planta',       detalle:'AB Energía',                                               estado:'Analista',   importe:104080.19,    cuenta:'Energía / Servicios',          id:10801},
+  {aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL', campo:'Ab Energía', unidad:'Planta',       detalle:'AB Energía',                                               estado:'Analista',   importe:38962,        cuenta:'Energía / Servicios',          id:10817},
+  {aut:'Daniel Barruti', prov:'GARRO MONICA ALEJANDRA', campo:'Ab Energía', unidad:'Planta',          detalle:'AB Energía (Daniel)',                                       estado:'Analista',   importe:640000,       cuenta:'Energía / Servicios',          id:10838},
+  {aut:'Sandra Bartucci', prov:'GONZALEZ IGNACIO GENARO', campo:'Ab Energía', unidad:'Planta',        detalle:'Servicio chillers J-501/J-502 (cableado por roedores)',    estado:'Analista',   importe:1650000,      cuenta:'Mantenimiento Equipos',        id:10804},
 ];
 
 const cuentas = [
-  {nombre:'Sanidad / Veterinaria',       importe:10229358.15, color:'#2ecc71'},
-  {nombre:'Honorarios Asesores Externos',importe:5774000,     color:'#4f8ef7'},
-  {nombre:'Fletes',                       importe:2764850,     color:'#f0a500'},
-  {nombre:'Maquinaria',                   importe:940127.49,   color:'#e67e22'},
-  {nombre:'Energía / Servicios',          importe:1182611.43,  color:'#9b59b6'},
-  {nombre:'Mantenimiento Equipos',        importe:1650000,     color:'#e84393'},
-  {nombre:'Personal',                     importe:273705,      color:'#1abc9c'},
-  {nombre:'Administración',              importe:60929.31,    color:'#95a5a6'},
+  {nombre:'Sanidad / Veterinaria',        importe:10229358.15, color:'#2ecc71'},
+  {nombre:'Honorarios Asesores Externos', importe:5774000,     color:'#4f8ef7'},
+  {nombre:'Fletes',                        importe:2764850,     color:'#f0a500'},
+  {nombre:'Maquinaria',                    importe:940127.49,   color:'#e67e22'},
+  {nombre:'Energía / Servicios',           importe:1182611.43,  color:'#9b59b6'},
+  {nombre:'Mantenimiento Equipos',         importe:1650000,     color:'#e84393'},
+  {nombre:'Personal',                      importe:273705,      color:'#1abc9c'},
+  {nombre:'Administración',               importe:60929.31,    color:'#95a5a6'},
 ];
 
 const campos = [
@@ -600,11 +698,10 @@ const campos = [
   {campo:'Ab Energía', importe:2832611.43,  pct:12.38},
 ];
 
-// ── HELPERS ──────────────────────────────────────────────────────────────
 const fmt = n => '$' + n.toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
-const pct  = n => (n/TOTAL*100).toFixed(1) + '%';
+const pct  = (n, tot) => ((n / (tot||TOTAL)) * 100).toFixed(1) + '%';
 
-// ── RENDER BARRAS CUENTA ──────────────────────────────────────────────────
+// ── RENDER BARRAS CUENTA ─────────────────────────────────────────────────
 const maxCuenta = Math.max(...cuentas.map(c=>c.importe));
 const barsEl = document.getElementById('bars-cuenta');
 cuentas.forEach(c => {
@@ -617,72 +714,57 @@ cuentas.forEach(c => {
     </div>`;
 });
 
-// ── RENDER TABLA DETALLE ──────────────────────────────────────────────────
+// ── RENDER TABLA DETALLE (con data-attrs para filtros) ───────────────────
 const tbody = document.getElementById('tbody');
-let prevAut = null;
 let subtotals = {};
-
-detalle.forEach(r => {
-  subtotals[r.aut] = (subtotals[r.aut] || 0) + r.importe;
-});
+detalle.forEach(r => { subtotals[r.aut] = (subtotals[r.aut]||0) + r.importe; });
 
 detalle.forEach((r, i) => {
-  const isNewAut = r.aut !== prevAut;
-  const nextAut  = detalle[i+1] ? detalle[i+1].aut : null;
-  const isLastOfAut = nextAut !== r.aut;
-
   const estadoClass = r.estado.toLowerCase();
-  tbody.innerHTML += `
-    <tr>
-      <td style="${isNewAut?'font-weight:600;color:#fff':''}">${isNewAut ? r.aut : ''}</td>
-      <td>${r.prov}</td>
-      <td>${r.campo}</td>
-      <td class="td-muted">${r.unidad}</td>
-      <td class="td-muted" style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.detalle}</td>
-      <td><span class="badge ${estadoClass}"><span class="badge-dot"></span>${r.estado}</span></td>
-      <td class="td-mono" style="text-align:right">${fmt(r.importe)}</td>
-      <td class="td-muted">${r.cuenta}</td>
-      <td class="td-mono td-muted">${r.id}</td>
-    </tr>`;
-
-  if (isLastOfAut) {
-    tbody.innerHTML += `
-      <tr class="subtotal-row">
-        <td colspan="6" style="text-align:right;padding-right:8px">Subtotal ${r.aut}</td>
-        <td class="td-mono" style="text-align:right">${fmt(subtotals[r.aut])}</td>
-        <td colspan="2"></td>
-      </tr>`;
-  }
-
-  prevAut = r.aut;
+  const tr = document.createElement('tr');
+  tr.dataset.aut    = r.aut;
+  tr.dataset.unidad = r.unidad;
+  tr.dataset.imp    = r.importe;
+  tr.innerHTML = `
+    <td data-aut-cell>${r.aut}</td>
+    <td>${r.prov}</td>
+    <td>${r.campo}</td>
+    <td class="td-muted">${r.unidad}</td>
+    <td class="td-muted" style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.detalle}</td>
+    <td><span class="badge ${estadoClass}"><span class="badge-dot"></span>${r.estado}</span></td>
+    <td class="td-mono" style="text-align:right">${fmt(r.importe)}</td>
+    <td class="td-muted">${r.cuenta}</td>
+    <td class="td-mono td-muted">${r.id}</td>`;
+  tbody.appendChild(tr);
 });
 
-tbody.innerHTML += `
-  <tr class="total-row">
-    <td colspan="6" style="text-align:right;padding-right:8px">TOTAL GENERAL</td>
-    <td class="td-mono" style="text-align:right">${fmt(TOTAL)}</td>
-    <td colspan="2"></td>
-  </tr>`;
+// total row (siempre visible)
+const totalTr = document.createElement('tr');
+totalTr.className = 'total-row';
+totalTr.id = 'total-row-dynamic';
+totalTr.innerHTML = `
+  <td colspan="6" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td>
+  <td class="td-mono" style="text-align:right" id="total-cell">${fmt(TOTAL)}</td>
+  <td colspan="2"></td>`;
+tbody.appendChild(totalTr);
 
-// ── RENDER TABLA AUTORIZANTE ──────────────────────────────────────────────
+// ── RENDER TABLA AUTORIZANTE ─────────────────────────────────────────────
 const autData = [
   {aut:'Cristian Amaya', rows:[
-    {campo:'25 de Mayo', unidad:'Feedlot',  imp:2764850},
-    {campo:'Winifreda',  unidad:'Cría',     imp:10598558.15},
+    {campo:'25 de Mayo', unidad:'Feedlot',         imp:2764850},
+    {campo:'Winifreda',  unidad:'Cría',            imp:10598558.15},
   ]},
   {aut:'Daniel Barruti', rows:[
-    {campo:'25 de Mayo', unidad:'Agricultura', imp:6484927.49},
+    {campo:'25 de Mayo', unidad:'Agricultura',     imp:6484927.49},
     {campo:'25 de Mayo', unidad:'A distribuir a CC', imp:194634.31},
-    {campo:'Ab Energía', unidad:'Planta',     imp:1182611.43},
+    {campo:'Ab Energía', unidad:'Planta',          imp:1182611.43},
   ]},
   {aut:'Sandra Bartucci', rows:[
-    {campo:'Ab Energía', unidad:'Planta',     imp:1650000},
+    {campo:'Ab Energía', unidad:'Planta',          imp:1650000},
   ]},
 ];
 
 const tbodyAut = document.getElementById('tbody-aut');
-const totales = {Cristian:13363408.15, Daniel:7862173.23, Sandra:1650000};
-
 autData.forEach(a => {
   const tot = a.rows.reduce((s,r)=>s+r.imp,0);
   tbodyAut.innerHTML += `<tr><td style="font-weight:600;color:#fff">${a.aut}</td><td></td><td></td></tr>`;
@@ -701,7 +783,6 @@ autData.forEach(a => {
       <td class="td-mono" style="text-align:right">${pct(tot)}</td>
     </tr>`;
 });
-
 tbodyAut.innerHTML += `
   <tr class="total-row">
     <td>Total</td>
@@ -709,7 +790,7 @@ tbodyAut.innerHTML += `
     <td class="td-mono" style="text-align:right">100%</td>
   </tr>`;
 
-// ── RENDER TABLA CAMPO ──────────────────────────────────────────────────
+// ── RENDER TABLA CAMPO ───────────────────────────────────────────────────
 const tbodyCampo = document.getElementById('tbody-campo');
 campos.forEach(c => {
   tbodyCampo.innerHTML += `
@@ -725,6 +806,71 @@ tbodyCampo.innerHTML += `
     <td class="td-mono" style="text-align:right">${fmt(TOTAL)}</td>
     <td class="td-mono" style="text-align:right">100%</td>
   </tr>`;
+
+// ── FILTER LOGIC ─────────────────────────────────────────────────────────
+let activeUnidad = 'all';
+let activeAut    = 'all';
+
+function applyFilters() {
+  const rows = tbody.querySelectorAll('tr[data-aut]');
+  let total = 0, count = 0;
+
+  rows.forEach(tr => {
+    const u = tr.dataset.unidad;
+    const a = tr.dataset.aut;
+    const matchU = activeUnidad === 'all' || u === activeUnidad;
+    const matchA = activeAut    === 'all' || a === activeAut;
+    const visible = matchU && matchA;
+    tr.classList.toggle('hidden', !visible);
+    if (visible) { total += parseFloat(tr.dataset.imp); count++; }
+  });
+
+  // update counter
+  document.getElementById('filter-results').textContent =
+    `${count} comprobante${count!==1?'s':''} · ${fmt(total)}`;
+
+  // update total row
+  document.getElementById('total-cell').textContent = fmt(total);
+
+  // show/hide reset button
+  document.getElementById('filter-reset').style.opacity =
+    (activeUnidad === 'all' && activeAut === 'all') ? '0.4' : '1';
+}
+
+function resetFilters() {
+  activeUnidad = 'all';
+  activeAut    = 'all';
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.val === 'all');
+    c.classList.remove('active-aut');
+    if (c.dataset.val === 'all') {
+      c.classList.add('active');
+    }
+  });
+  applyFilters();
+}
+
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const type = chip.dataset.type;
+    const val  = chip.dataset.val;
+
+    // update state
+    if (type === 'unidad') activeUnidad = val;
+    else                    activeAut    = val;
+
+    // update chip styles for this group
+    document.querySelectorAll(`.filter-chip[data-type="${type}"]`).forEach(c => {
+      c.classList.remove('active', 'active-aut');
+    });
+    chip.classList.add(type === 'aut' ? 'active-aut' : 'active');
+
+    applyFilters();
+  });
+});
+
+// init
+applyFilters();
 </script>
 
 </body>
