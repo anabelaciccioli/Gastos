@@ -23,9 +23,9 @@
     --font-body: 'DM Sans', sans-serif;
     --font-mono: 'DM Mono', monospace;
   }
-
+ 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
   body {
     background: var(--bg);
     color: var(--text);
@@ -34,7 +34,7 @@
     line-height: 1.5;
     min-height: 100vh;
   }
-
+ 
   /* ── HEADER ── */
   header {
     background: var(--surface);
@@ -46,7 +46,7 @@
     flex-wrap: wrap;
     gap: 12px;
   }
-
+ 
   .header-left h1 {
     font-family: var(--font-display);
     font-size: 26px;
@@ -54,13 +54,13 @@
     letter-spacing: -0.5px;
     color: #fff;
   }
-
+ 
   .header-left p {
     color: var(--text-muted);
     font-size: 13px;
     margin-top: 4px;
   }
-
+ 
   .header-badge {
     display: inline-flex;
     align-items: center;
@@ -74,13 +74,13 @@
     color: var(--accent);
     letter-spacing: .3px;
   }
-
+ 
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
+ 
   /* ── LAYOUT ── */
   main { padding: 32px 40px; max-width: 1280px; margin: 0 auto; }
-
+ 
   /* ── KPI BAND ── */
   .kpis {
     display: grid;
@@ -88,7 +88,7 @@
     gap: 16px;
     margin-bottom: 32px;
   }
-
+ 
   .kpi {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -97,19 +97,19 @@
     position: relative;
     overflow: hidden;
   }
-
+ 
   .kpi::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
   }
-
+ 
   .kpi.total::before { background: linear-gradient(90deg,var(--accent),#7cb9ff); }
   .kpi.docs::before  { background: linear-gradient(90deg,#9b59b6,#d7a0f8); }
   .kpi.analista::before { background: linear-gradient(90deg,var(--yellow),#ffe0a0); }
   .kpi.verificado::before { background: linear-gradient(90deg,var(--green),#a0f8c0); }
-
+ 
   .kpi-label {
     font-size: 11px;
     font-weight: 500;
@@ -118,7 +118,7 @@
     color: var(--text-muted);
     margin-bottom: 10px;
   }
-
+ 
   .kpi-value {
     font-family: var(--font-mono);
     font-size: 22px;
@@ -126,17 +126,17 @@
     color: #fff;
     letter-spacing: -0.5px;
   }
-
+ 
   .kpi-sub {
     font-size: 11px;
     color: var(--text-muted);
     margin-top: 5px;
   }
-
+ 
   /* ── TWO COLUMN ── */
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
   .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px; }
-
+ 
   /* ── PANEL ── */
   .panel {
     background: var(--surface);
@@ -144,7 +144,7 @@
     border-radius: 12px;
     padding: 20px 22px;
   }
-
+ 
   .panel-title {
     font-size: 11px;
     font-weight: 500;
@@ -153,7 +153,7 @@
     color: var(--text-muted);
     margin-bottom: 16px;
   }
-
+ 
   /* ── BAR CHART ── */
   .bar-row {
     display: flex;
@@ -161,7 +161,7 @@
     gap: 10px;
     margin-bottom: 10px;
   }
-
+ 
   .bar-label {
     font-size: 12px;
     color: var(--text);
@@ -171,7 +171,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
+ 
   .bar-track {
     flex: 1;
     background: var(--surface2);
@@ -179,13 +179,13 @@
     height: 8px;
     overflow: hidden;
   }
-
+ 
   .bar-fill {
     height: 100%;
     border-radius: 4px;
     transition: width .8s cubic-bezier(.4,0,.2,1);
   }
-
+ 
   .bar-amount {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -194,16 +194,16 @@
     text-align: right;
     flex-shrink: 0;
   }
-
+ 
   /* ── TABLE ── */
   .table-wrap { overflow-x: auto; }
-
+ 
   table {
     width: 100%;
     border-collapse: collapse;
     font-size: 12.5px;
   }
-
+ 
   thead th {
     font-size: 10px;
     font-weight: 600;
@@ -217,23 +217,23 @@
     position: sticky;
     top: 0;
   }
-
+ 
   tbody tr {
     border-bottom: 1px solid rgba(42,47,66,.5);
     transition: background .15s;
   }
-
+ 
   tbody tr:hover { background: rgba(79,142,247,.04); }
-
+ 
   tbody td {
     padding: 9px 12px;
     color: var(--text);
     vertical-align: middle;
   }
-
+ 
   .td-mono { font-family: var(--font-mono); font-size: 12px; }
   .td-muted { color: var(--text-muted); }
-
+ 
   /* ── BADGE STATE ── */
   .badge {
     display: inline-flex;
@@ -245,9 +245,9 @@
     font-weight: 500;
     white-space: nowrap;
   }
-
+ 
   .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
-
+ 
   .badge.verificado { background: rgba(46,204,113,.1); color: #2ecc71; }
   .badge.verificado .badge-dot { background: #2ecc71; }
   .badge.analista { background: rgba(240,165,0,.1); color: #f0a500; }
@@ -256,18 +256,18 @@
   .badge.gerente .badge-dot { background: #e67e22; }
   .badge.pivot { background: rgba(85,91,114,.15); color: #aaa; }
   .badge.pivot .badge-dot { background: #888; }
-
+ 
   /* ── DONUT ── */
   .donut-wrap {
     display: flex;
     align-items: center;
     gap: 20px;
   }
-
+ 
   svg.donut { flex-shrink: 0; }
-
+ 
   .donut-legend { flex: 1; }
-
+ 
   .legend-item {
     display: flex;
     align-items: center;
@@ -275,16 +275,16 @@
     margin-bottom: 8px;
     font-size: 12px;
   }
-
+ 
   .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
+ 
   .legend-pct {
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-muted);
     margin-left: auto;
   }
-
+ 
   /* ── INSIGHT STRIP ── */
   .insight {
     background: rgba(79,142,247,.06);
@@ -296,9 +296,9 @@
     color: var(--text-muted);
     margin-bottom: 24px;
   }
-
+ 
   .insight strong { color: var(--text); }
-
+ 
   /* ── SUBTOTAL ROW ── */
   .subtotal-row td {
     background: rgba(255,255,255,.02);
@@ -308,9 +308,9 @@
     letter-spacing: .3px;
     text-transform: uppercase;
   }
-
+ 
   .subtotal-row td.td-mono { color: var(--text); }
-
+ 
   /* ── TOTAL ROW ── */
   .total-row td {
     border-top: 2px solid var(--border);
@@ -319,89 +319,102 @@
     font-size: 13px;
     padding-top: 12px;
   }
-
-  /* ── FILTER BAR ── */
-  .filter-bar {
+ 
+  /* ── FILTER TABS ── */
+  .filter-section {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 32px;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+ 
+  .filter-group {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 20px;
-    margin-bottom: 24px;
+    gap: 0;
+    padding: 10px 0;
+    border-bottom: 2px solid transparent;
   }
-
-  .filter-label {
+ 
+  .filter-group-label {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: .7px;
     text-transform: uppercase;
     color: var(--text-muted);
+    margin-right: 10px;
     white-space: nowrap;
   }
-
-  .filter-sep {
-    width: 1px;
-    height: 20px;
-    background: var(--border);
-  }
-
-  .filter-chip {
+ 
+  .tab {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 5px 13px;
-    border-radius: 20px;
-    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12.5px;
     font-weight: 500;
     cursor: pointer;
-    border: 1px solid var(--border);
+    border: none;
     background: transparent;
     color: var(--text-muted);
-    transition: all .18s;
+    transition: all .15s;
     white-space: nowrap;
     user-select: none;
+    font-family: var(--font-body);
+    margin-right: 2px;
   }
-
-  .filter-chip:hover { border-color: var(--accent); color: var(--text); }
-
-  .filter-chip.active {
+ 
+  .tab:hover { background: var(--surface2); color: var(--text); }
+ 
+  .tab.active-u {
     background: rgba(79,142,247,.15);
-    border-color: var(--accent);
-    color: #fff;
+    color: #7cb9ff;
+    font-weight: 600;
   }
-
-  .filter-chip.active-aut {
-    background: rgba(240,165,0,.12);
-    border-color: var(--yellow);
-    color: #fff;
+ 
+  .tab.active-a {
+    background: rgba(240,165,0,.14);
+    color: #f0c040;
+    font-weight: 600;
   }
-
-  .filter-results {
+ 
+  .filter-info {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+  }
+ 
+  .filter-count {
+    font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-muted);
-    font-family: var(--font-mono);
+    background: var(--surface2);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
   }
-
-  .filter-reset {
+ 
+  .btn-reset {
     background: none;
-    border: none;
+    border: 1px solid var(--border);
     color: var(--text-muted);
     font-size: 11px;
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 4px 10px;
     border-radius: 6px;
-    transition: color .15s;
+    transition: all .15s;
     font-family: var(--font-body);
   }
-  .filter-reset:hover { color: var(--text); }
-
-  /* hide rows */
+  .btn-reset:hover { border-color: var(--accent); color: var(--text); }
+ 
+  /* hide filtered rows */
   tr.hidden { display: none; }
-
+ 
   /* ── FOOTER ── */
   footer {
     text-align: center;
@@ -411,7 +424,7 @@
     border-top: 1px solid var(--border);
     margin-top: 12px;
   }
-
+ 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     header, main { padding: 20px; }
@@ -422,20 +435,44 @@
 </style>
 </head>
 <body>
-
+ 
 <header>
   <div class="header-left">
     <h1>Reporte Semanal de Gastos de Campo</h1>
-    <p>Período <strong>01/06 al 07/06</strong> · Gastos no pagados ni contabilizados en Finnegans · Plataforma TSDOCS</p>
+    <p>Período <strong>01/06 al 07/06</strong> · Gastos realizados · Plataforma TSDOCS</p>
   </div>
   <div class="header-badge">
     <span class="dot"></span>
     Solo lectura · Semana actual
   </div>
 </header>
-
+ 
+<!-- FILTER TABS -->
+<div class="filter-section">
+  <div class="filter-group">
+    <span class="filter-group-label">Unidad</span>
+    <button class="tab active-u" data-type="unidad" data-val="all">Todas</button>
+    <button class="tab" data-type="unidad" data-val="Feedlot">Feedlot</button>
+    <button class="tab" data-type="unidad" data-val="Cría">Cría</button>
+    <button class="tab" data-type="unidad" data-val="Agricultura">Agricultura</button>
+    <button class="tab" data-type="unidad" data-val="Planta">Planta</button>
+    <button class="tab" data-type="unidad" data-val="A distribuir a CC">A distribuir</button>
+  </div>
+  <div class="filter-group">
+    <span class="filter-group-label">Autorizante</span>
+    <button class="tab active-a" data-type="aut" data-val="all">Todos</button>
+    <button class="tab" data-type="aut" data-val="Cristian Amaya">C. Amaya</button>
+    <button class="tab" data-type="aut" data-val="Daniel Barruti">D. Barruti</button>
+    <button class="tab" data-type="aut" data-val="Sandra Bartucci">S. Bartucci</button>
+  </div>
+  <div class="filter-info">
+    <span class="filter-count" id="filter-results">18 comprobantes · $22.875.581</span>
+    <button class="btn-reset" onclick="resetFilters()">✕ Limpiar</button>
+  </div>
+</div>
+ 
 <main>
-
+ 
   <!-- KPI BAND -->
   <div class="kpis">
     <div class="kpi total">
@@ -459,16 +496,16 @@
       <div class="kpi-sub">Estado Verificado</div>
     </div>
   </div>
-
+ 
   <!-- INSIGHT -->
   <div class="insight">
     🌾 <strong>Winifreda concentra el 46% del gasto</strong> esta semana — impulsado principalmente por sanidad y veterinaria (Gabino Raúl Pascual, $10.2M).
     Falta pasar a pago <strong>$6.994.373</strong> (30.6% del total).
   </div>
-
+ 
   <!-- CHARTS ROW -->
   <div class="cols3">
-
+ 
     <!-- DONUT CAMPO -->
     <div class="panel">
       <div class="panel-title">Distribución por campo</div>
@@ -507,7 +544,7 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- DONUT AUTORIZANTE -->
     <div class="panel">
       <div class="panel-title">Distribución por autorizante</div>
@@ -543,7 +580,7 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- ESTADO -->
     <div class="panel">
       <div class="panel-title">Estado de los comprobantes</div>
@@ -568,35 +605,15 @@
         </div>
       </div>
     </div>
-
+ 
   </div>
-
+ 
   <!-- BARRAS POR CUENTA -->
   <div class="panel" style="margin-bottom:24px">
     <div class="panel-title">Gasto por cuenta / concepto</div>
     <div id="bars-cuenta"></div>
   </div>
-
-  <!-- FILTER BAR -->
-  <div class="filter-bar" id="filter-bar">
-    <span class="filter-label">Unidad</span>
-    <button class="filter-chip active" data-type="unidad" data-val="all">Todas</button>
-    <button class="filter-chip" data-type="unidad" data-val="Feedlot">Feedlot</button>
-    <button class="filter-chip" data-type="unidad" data-val="Cría">Cría</button>
-    <button class="filter-chip" data-type="unidad" data-val="Agricultura">Agricultura</button>
-    <button class="filter-chip" data-type="unidad" data-val="Planta">Planta</button>
-    <button class="filter-chip" data-type="unidad" data-val="A distribuir a CC">A distribuir</button>
-    <div class="filter-sep"></div>
-    <span class="filter-label">Autorizante</span>
-    <button class="filter-chip active" data-type="aut" data-val="all">Todos</button>
-    <button class="filter-chip" data-type="aut" data-val="Cristian Amaya">C. Amaya</button>
-    <button class="filter-chip" data-type="aut" data-val="Daniel Barruti">D. Barruti</button>
-    <button class="filter-chip" data-type="aut" data-val="Sandra Bartucci">S. Bartucci</button>
-    <div class="filter-sep"></div>
-    <span class="filter-results" id="filter-results">18 comprobantes · $22.875.581</span>
-    <button class="filter-reset" id="filter-reset" onclick="resetFilters()">✕ Limpiar</button>
-  </div>
-
+ 
   <!-- TABLA DETALLE -->
   <div class="panel" style="margin-bottom:24px">
     <div class="panel-title">Detalle de comprobantes — ordenado por autorizante</div>
@@ -619,7 +636,7 @@
       </table>
     </div>
   </div>
-
+ 
   <!-- RESUMEN POR AUTORIZANTE -->
   <div class="cols">
     <div class="panel">
@@ -635,7 +652,7 @@
         <tbody id="tbody-aut"></tbody>
       </table>
     </div>
-
+ 
     <div class="panel">
       <div class="panel-title">Resumen por campo</div>
       <table id="tabla-campo">
@@ -650,16 +667,16 @@
       </table>
     </div>
   </div>
-
+ 
 </main>
-
+ 
 <footer>
   TSDOCS · Período 01/06 al 07/06 · Importes en pesos ($) · Estados: Pivot = pend. autorizar · Gerente = asignado pend. autorizar · Analista = autorizado pend. pago · Verificado = pasado/listo para pagar
 </footer>
-
+ 
 <script>
 const TOTAL = 22875581.38;
-
+ 
 const detalle = [
   {aut:'Cristian Amaya', prov:'IKES JUAN CARLOS',       campo:'25 de Mayo', unidad:'Feedlot',         detalle:'Flete de hacienda a Frigorífico La Anónima',               estado:'Verificado', importe:2764850,      cuenta:'Fletes',                       id:10771},
   {aut:'Cristian Amaya', prov:'EMPRESA EL CEIBO SRL',   campo:'Winifreda',  unidad:'Cría',            detalle:'Pasajes de personal (salida de franco, mayo)',              estado:'Analista',   importe:140000,       cuenta:'Personal',                     id:10799},
@@ -680,7 +697,7 @@ const detalle = [
   {aut:'Daniel Barruti', prov:'GARRO MONICA ALEJANDRA', campo:'Ab Energía', unidad:'Planta',          detalle:'AB Energía (Daniel)',                                       estado:'Analista',   importe:640000,       cuenta:'Energía / Servicios',          id:10838},
   {aut:'Sandra Bartucci', prov:'GONZALEZ IGNACIO GENARO', campo:'Ab Energía', unidad:'Planta',        detalle:'Servicio chillers J-501/J-502 (cableado por roedores)',    estado:'Analista',   importe:1650000,      cuenta:'Mantenimiento Equipos',        id:10804},
 ];
-
+ 
 const cuentas = [
   {nombre:'Sanidad / Veterinaria',        importe:10229358.15, color:'#2ecc71'},
   {nombre:'Honorarios Asesores Externos', importe:5774000,     color:'#4f8ef7'},
@@ -691,16 +708,16 @@ const cuentas = [
   {nombre:'Personal',                      importe:273705,      color:'#1abc9c'},
   {nombre:'Administración',               importe:60929.31,    color:'#95a5a6'},
 ];
-
+ 
 const campos = [
   {campo:'Winifreda',  importe:10598558.15, pct:46.33},
   {campo:'25 de Mayo', importe:9444411.80,  pct:41.29},
   {campo:'Ab Energía', importe:2832611.43,  pct:12.38},
 ];
-
+ 
 const fmt = n => '$' + n.toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
 const pct  = (n, tot) => ((n / (tot||TOTAL)) * 100).toFixed(1) + '%';
-
+ 
 // ── RENDER BARRAS CUENTA ─────────────────────────────────────────────────
 const maxCuenta = Math.max(...cuentas.map(c=>c.importe));
 const barsEl = document.getElementById('bars-cuenta');
@@ -713,12 +730,12 @@ cuentas.forEach(c => {
       <div class="bar-amount">${fmt(c.importe)}</div>
     </div>`;
 });
-
+ 
 // ── RENDER TABLA DETALLE (con data-attrs para filtros) ───────────────────
 const tbody = document.getElementById('tbody');
 let subtotals = {};
 detalle.forEach(r => { subtotals[r.aut] = (subtotals[r.aut]||0) + r.importe; });
-
+ 
 detalle.forEach((r, i) => {
   const estadoClass = r.estado.toLowerCase();
   const tr = document.createElement('tr');
@@ -737,7 +754,7 @@ detalle.forEach((r, i) => {
     <td class="td-mono td-muted">${r.id}</td>`;
   tbody.appendChild(tr);
 });
-
+ 
 // total row (siempre visible)
 const totalTr = document.createElement('tr');
 totalTr.className = 'total-row';
@@ -747,7 +764,7 @@ totalTr.innerHTML = `
   <td class="td-mono" style="text-align:right" id="total-cell">${fmt(TOTAL)}</td>
   <td colspan="2"></td>`;
 tbody.appendChild(totalTr);
-
+ 
 // ── RENDER TABLA AUTORIZANTE ─────────────────────────────────────────────
 const autData = [
   {aut:'Cristian Amaya', rows:[
@@ -763,7 +780,7 @@ const autData = [
     {campo:'Ab Energía', unidad:'Planta',          imp:1650000},
   ]},
 ];
-
+ 
 const tbodyAut = document.getElementById('tbody-aut');
 autData.forEach(a => {
   const tot = a.rows.reduce((s,r)=>s+r.imp,0);
@@ -789,7 +806,7 @@ tbodyAut.innerHTML += `
     <td class="td-mono" style="text-align:right">${fmt(TOTAL)}</td>
     <td class="td-mono" style="text-align:right">100%</td>
   </tr>`;
-
+ 
 // ── RENDER TABLA CAMPO ───────────────────────────────────────────────────
 const tbodyCampo = document.getElementById('tbody-campo');
 campos.forEach(c => {
@@ -806,15 +823,15 @@ tbodyCampo.innerHTML += `
     <td class="td-mono" style="text-align:right">${fmt(TOTAL)}</td>
     <td class="td-mono" style="text-align:right">100%</td>
   </tr>`;
-
+ 
 // ── FILTER LOGIC ─────────────────────────────────────────────────────────
 let activeUnidad = 'all';
 let activeAut    = 'all';
-
+ 
 function applyFilters() {
   const rows = tbody.querySelectorAll('tr[data-aut]');
   let total = 0, count = 0;
-
+ 
   rows.forEach(tr => {
     const u = tr.dataset.unidad;
     const a = tr.dataset.aut;
@@ -824,54 +841,44 @@ function applyFilters() {
     tr.classList.toggle('hidden', !visible);
     if (visible) { total += parseFloat(tr.dataset.imp); count++; }
   });
-
-  // update counter
+ 
   document.getElementById('filter-results').textContent =
     `${count} comprobante${count!==1?'s':''} · ${fmt(total)}`;
-
-  // update total row
   document.getElementById('total-cell').textContent = fmt(total);
-
-  // show/hide reset button
-  document.getElementById('filter-reset').style.opacity =
-    (activeUnidad === 'all' && activeAut === 'all') ? '0.4' : '1';
 }
-
+ 
 function resetFilters() {
   activeUnidad = 'all';
   activeAut    = 'all';
-  document.querySelectorAll('.filter-chip').forEach(c => {
-    c.classList.toggle('active', c.dataset.val === 'all');
-    c.classList.remove('active-aut');
-    if (c.dataset.val === 'all') {
-      c.classList.add('active');
-    }
+  document.querySelectorAll('.tab').forEach(c => {
+    c.classList.remove('active-u', 'active-a');
+    if (c.dataset.val === 'all' && c.dataset.type === 'unidad') c.classList.add('active-u');
+    if (c.dataset.val === 'all' && c.dataset.type === 'aut')    c.classList.add('active-a');
   });
   applyFilters();
 }
-
-document.querySelectorAll('.filter-chip').forEach(chip => {
+ 
+document.querySelectorAll('.tab').forEach(chip => {
   chip.addEventListener('click', () => {
     const type = chip.dataset.type;
     const val  = chip.dataset.val;
-
-    // update state
+ 
     if (type === 'unidad') activeUnidad = val;
     else                    activeAut    = val;
-
-    // update chip styles for this group
-    document.querySelectorAll(`.filter-chip[data-type="${type}"]`).forEach(c => {
-      c.classList.remove('active', 'active-aut');
+ 
+    document.querySelectorAll(`.tab[data-type="${type}"]`).forEach(c => {
+      c.classList.remove('active-u', 'active-a');
     });
-    chip.classList.add(type === 'aut' ? 'active-aut' : 'active');
-
+    chip.classList.add(type === 'aut' ? 'active-a' : 'active-u');
+ 
     applyFilters();
   });
 });
-
+ 
 // init
 applyFilters();
 </script>
-
+ 
 </body>
 </html>
+ 
