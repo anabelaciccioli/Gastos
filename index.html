@@ -88,8 +88,8 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
  
 <header>
   <div>
-    <h1>Reporte GASTOS AB Agro y AB Energía</h1>
-    <p>Gastos realizados · Plataforma TSDOCS · <span id="header-periodo">Todas las semanas</span></p>
+    <h1>Reporte de Gastos</h1>
+    <p><span style="color:var(--text);font-weight:500">AB Agro · AB Energía</span> &nbsp;·&nbsp; Plataforma TSDOCS &nbsp;·&nbsp; <span id="header-periodo">Todas las semanas</span></p>
   </div>
   <div class="header-right">
     <span class="upload-state" id="upload-state"></span>
@@ -153,127 +153,143 @@ const fmt=n=>'$'+n.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFracti
  
 // ── DATOS HARDCODEADOS ────────────────────────────────────────────────────
 let DATA=[
-  {sem:'01/06/2026–07/06/2026',femis:'',          faut:'02/06/2026',aut:'Cristian Amaya', prov:'EMPRESA EL CEIBO SRL',                         campo:'Winifreda', unidad:'Cría',          detalle:'Pasajes de personal (salida de franco, mayo)',                   estado:'Analista',  imp:140000,     cuenta:'Personal',id:10799,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'02/06/2026',faut:'03/06/2026',aut:'Cristian Amaya', prov:'AGUADAS ALOMAR SRL',                           campo:'Winifreda', unidad:'Cría',          detalle:'Manta para tanque de Alto Pincén',                          estado:'Analista',  imp:229200,     cuenta:'Maquinaria',id:10808,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'01/06/2026',faut:'03/06/2026',aut:'Cristian Amaya', prov:'GABINO RAUL PASCUAL',                          campo:'Winifreda', unidad:'Cría',          detalle:'Vacunas, varillas, raspaje 42 toros, sangrado Brucelosis',      estado:'Verificado',imp:10229358.15,cuenta:'Sanidad / Veterinaria',id:10811,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'19/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Honorarios asesor agricultura',                                 estado:'Verificado',imp:2887000,    cuenta:'Honorarios Asesores Externos',id:10788,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'GARCIA NICOLAS DANIEL',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Honorarios asesor agricultura',                                 estado:'Analista',  imp:2887000,    cuenta:'Honorarios Asesores Externos',id:10789,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',                        campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía',                                                   estado:'Analista',  imp:360607.24,  cuenta:'Energía / Servicios',id:10790,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'14/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Empresa de maquinaria',                                         estado:'Analista',  imp:200700.25,  cuenta:'Maquinaria',id:10791,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'02/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía',                                                   estado:'Analista',  imp:38962,      cuenta:'Energía / Servicios',id:10792,id:10794,id:10817,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'28/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Empresa de maquinaria (repuesto Fontanini)',                     estado:'Analista',  imp:37873,      cuenta:'Maquinaria',id:10793,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'02/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Empresa de maquinaria (cubiertas TBH)',                          estado:'Analista',  imp:57838.67,   cuenta:'Maquinaria',mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'27/05/2026',faut:'01/06/2026',aut:'Daniel Barruti', prov:'COOP REGIONAL OESTE PAMPEANO',                 campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Administración (sin asignar a CC operativo)',              estado:'Analista',  imp:60929.31,   cuenta:'Administración',id:10795,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'01/06/2026',faut:'02/06/2026',aut:'Daniel Barruti', prov:'BERGONDI MIGUEL ANGEL',                        campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Personal (sin asignar a CC operativo)',                          estado:'Analista',  imp:133705,     cuenta:'Personal',id:10800,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'02/06/2026',faut:'03/06/2026',aut:'Daniel Barruti', prov:'AC ELECTRICIDAD SAS',                          campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Empresa de maquinaria (generador portátil)',                estado:'Analista',  imp:414515.57,  cuenta:'Maquinaria',id:10806,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'30/05/2026',faut:'05/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía',                                                   estado:'Analista',  imp:104080.19,  cuenta:'Energía / Servicios',id:10801,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'29/05/2026',faut:'05/06/2026',aut:'Daniel Barruti', prov:'TRANSPORTE EL PAMPERO SRL',                    campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía',                                                   estado:'Analista',  imp:38962,      cuenta:'Energía / Servicios',mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'05/06/2026',faut:'05/06/2026',aut:'Daniel Barruti', prov:'GARRO MONICA ALEJANDRA',                       campo:'Ab Energía',unidad:'Planta',       detalle:'AB Energía (Daniel)',                                           estado:'Analista',  imp:640000,     cuenta:'Energía / Servicios',id:10838,mes:'Junio 2026'},
-  {sem:'01/06/2026–07/06/2026',femis:'02/06/2026',faut:'07/06/2026',aut:'Sandra Bartucci',prov:'GONZALEZ IGNACIO GENARO',                      campo:'Ab Energía',unidad:'Planta',       detalle:'Servicio chillers J-501/J-502 (cableado por roedores)',          estado:'Analista',  imp:1650000,    cuenta:'Mantenimiento Equipos',id:10804,mes:'Junio 2026'},
-  {sem:'08/06/2026–14/06/2026',femis:'01/06/2026',faut:'08/06/2026',aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Válvulas compresor camión volcador (fontanini)',              estado:'Analista',  imp:127399.84,  cuenta:'Maquinaria',id:10841,mes:'Junio 2026'},
-  {sem:'08/06/2026–14/06/2026',femis:'05/06/2026',faut:'08/06/2026',aut:'Daniel Barruti', prov:'HIDRAULICA CVC S.A.S.',                        campo:'25 de Mayo',unidad:'Agricultura',    detalle:'Reparación, armado y reposición partes de hidrolavadora taller',estado:'Verificado',imp:945737.96,  cuenta:'Mantenimiento Equipos',id:10842,mes:'Junio 2026'},
-  {sem:'08/06/2026–14/06/2026',femis:'08/06/2026',faut:'08/06/2026',aut:'Daniel Barruti', prov:'VALDEZ GABRIEL ALFONSO',                       campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Servicios casa Rossi',                                           estado:'Verificado',imp:80467,      cuenta:'Personal',id:10847,mes:'Junio 2026'},
-  {sem:'08/06/2026–14/06/2026',femis:'04/06/2026',faut:'08/06/2026',aut:'Daniel Barruti', prov:'PRIETO ALICIA INES',                           campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Alquiler casa Rossi',                                            estado:'Verificado',imp:770000,     cuenta:'Personal',id:10848,mes:'Junio 2026'},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'01/06/2026',faut:'',aut:'Pend. de asignar',prov:'BARTUCCI SANDRA LORENA',campo:'Ab Energía',unidad:'Planta',detalle:'Ab Energía',estado:'Gerente',imp:3903886,cuenta:'Energía / Servicios',id:10840},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'19/05/2026',faut:'',aut:'Pend. de asignar',prov:'SALOMONE JULIO Y SALOMONE MARCELA E. S.H',campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',estado:'Gerente',imp:458000,cuenta:'Otros',id:10843},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'04/06/2026',faut:'',aut:'Pend. de asignar',prov:'TRANSPORTE EL PAMPERO SRL',campo:'Ab Energía',unidad:'Planta',detalle:'Ab Energía',estado:'Gerente',imp:68197.27,cuenta:'Energía / Servicios',id:10844},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'05/06/2026',faut:'',aut:'Pend. de asignar',prov:'AMOROS EMANUEL',campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',estado:'Gerente',imp:3678400,cuenta:'Otros',id:10845},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'08/06/2026',faut:'',aut:'Pend. de asignar',prov:'THOME JUAN JOSE',campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',estado:'Gerente',imp:3109312.8,cuenta:'Otros',id:10846},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'08/06/2026',faut:'',aut:'Pend. de asignar',prov:'GABRIEL HORACIO FRIDEL',campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',estado:'Gerente',imp:1405296.06,cuenta:'Otros',id:10849},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'02/06/2026',faut:'',aut:'Pend. de asignar',prov:'SPES VIATOR S.A.',campo:'Ab Energía',unidad:'Planta',detalle:'Ab Energía (EUR × 1700)',estado:'Gerente',imp:2890000,cuenta:'Energía / Servicios',id:10850},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'06/06/2026',faut:'',aut:'Pend. de asignar',prov:'TRANSPORTE EL PAMPERO SRL',campo:'Ab Energía',unidad:'Planta',detalle:'Ab Energía',estado:'Gerente',imp:52550.3,cuenta:'Energía / Servicios',id:10851},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'06/06/2026',faut:'',aut:'Pend. de asignar',prov:'TRANSPORTE EL PAMPERO SRL',campo:'25 de Mayo',unidad:'A distribuir a CC',detalle:'Sin detalle',estado:'Gerente',imp:201620.51,cuenta:'Otros',id:10852},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'08/06/2026',faut:'',aut:'Pend. de asignar',prov:'GARCIA HECTOR FABIAN',campo:'Ab Energía',unidad:'Planta',detalle:'Ab Energía',estado:'Gerente',imp:2783000,cuenta:'Energía / Servicios',id:10853},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'',          faut:'02/06/2026',aut:'Cristian Amaya',   prov:'EMPRESA EL CEIBO SRL',                                           campo:'Winifreda',  unidad:'Cría',            detalle:'Pasajes de Perez y Orueta en su salida de franco en mes de Mayo',                       estado:'Analista',  imp:140000,     cuenta:'Personal',                     id:10799},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'02/06/2026',faut:'03/06/2026',aut:'Cristian Amaya',   prov:'AGUADAS ALOMAR SRL',                                            campo:'Winifreda',  unidad:'Cría',            detalle:'Manta para tanque de alto pincen',                                                     estado:'Analista',  imp:229200,     cuenta:'Otros',                        id:10808},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'01/06/2026',faut:'03/06/2026',aut:'Cristian Amaya',   prov:'GABINO RAUL PASCUAL',                                           campo:'Winifreda',  unidad:'Cría',            detalle:'Vacunas, varillas para bollero, Raspaje a 42 Toros, sangrado obligatorio Brucelosis',    estado:'Verificado',imp:10229358.15,cuenta:'Sanidad / Veterinaria',        id:10811},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'19/05/2026',faut:'01/06/2026',aut:'Daniel Barruti',   prov:'GARCIA NICOLAS DANIEL',                                         campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Honorarios administración',                                                          estado:'Verificado',imp:2887000,    cuenta:'Honorarios Asesores Externos', id:10788},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'29/05/2026',faut:'01/06/2026',aut:'Daniel Barruti',   prov:'GARCIA NICOLAS DANIEL',                                         campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Honorarios administración',                                                          estado:'Analista',  imp:2887000,    cuenta:'Honorarios Asesores Externos', id:10789},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'29/05/2026',faut:'01/06/2026',aut:'Daniel Barruti',   prov:'HIDRAULICA CVC S.A.S.',                                         campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía',                                                                            estado:'Analista',  imp:360607.24,  cuenta:'Energía / Servicios',          id:10790},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'14/05/2026',faut:'01/06/2026',aut:'Daniel Barruti',   prov:'HIDRAULICA CVC S.A.S.',                                         campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Empresa maquinaria',                                                                    estado:'Analista',  imp:200700.25,  cuenta:'Maquinaria',                   id:10791},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'29/05/2026',faut:'02/06/2026',aut:'Daniel Barruti',   prov:'TRANSPORTE EL PAMPERO SRL',                                     campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía',                                                                            estado:'Analista',  imp:38962,      cuenta:'Energía / Servicios',          id:10792},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'28/05/2026',faut:'01/06/2026',aut:'Daniel Barruti',   prov:'TRANSPORTE EL PAMPERO SRL',                                     campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Empresa maquinaria',                                                                    estado:'Analista',  imp:37873,      cuenta:'Maquinaria',                   id:10793},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'29/05/2026',faut:'02/06/2026',aut:'Daniel Barruti',   prov:'TRANSPORTE EL PAMPERO SRL',                                     campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Empresa maquinaria',                                                                    estado:'Analista',  imp:57838.67,   cuenta:'Maquinaria',                   id:10794},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'27/05/2026',faut:'01/06/2026',aut:'Daniel Barruti',   prov:'COOP REGIONAL OESTE PAMPEANO',                                  campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Administración',                                                                      estado:'Analista',  imp:60929.31,   cuenta:'Administración',               id:10795},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'01/06/2026',faut:'02/06/2026',aut:'Daniel Barruti',   prov:'BERGONDI MIGUEL ANGEL',                                         campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Personal',                                                                            estado:'Analista',  imp:133705,     cuenta:'Personal',                     id:10800},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'30/05/2026',faut:'05/06/2026',aut:'Daniel Barruti',   prov:'TRANSPORTE EL PAMPERO SRL',                                     campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía',                                                                            estado:'Analista',  imp:104080.19,  cuenta:'Energía / Servicios',          id:10801},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'02/06/2026',faut:'03/06/2026',aut:'Daniel Barruti',   prov:'AC ELECTRICIDAD SAS',                                           campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Empresa maquinaria (generador portátil)',                                              estado:'Analista',  imp:414515.57,  cuenta:'Maquinaria',                   id:10806},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'29/05/2026',faut:'05/06/2026',aut:'Daniel Barruti',   prov:'TRANSPORTE EL PAMPERO SRL',                                     campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía',                                                                            estado:'Analista',  imp:38962,      cuenta:'Energía / Servicios',          id:10817},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'05/06/2026',faut:'05/06/2026',aut:'Daniel Barruti',   prov:'GARRO MONICA ALEJANDRA',                                        campo:'Ab Energía', unidad:'Planta',           detalle:'AB Energía (Daniel)',                                                                   estado:'Analista',  imp:640000,     cuenta:'Energía / Servicios',          id:10838},
+  {sem:'01/06/2026–07/06/2026',mes:'Junio 2026', femis:'02/06/2026',faut:'07/06/2026',aut:'Sandra Bartucci',  prov:'GONZALEZ IGNACIO GENARO',                                       campo:'Ab Energía', unidad:'Planta',           detalle:'Servicios a J-501 y J-502 (Chillers). Revisión cableado por daño por roedores',        estado:'Analista',  imp:1650000,    cuenta:'Mantenimiento Equipos',        id:10804},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'01/06/2026',faut:'08/06/2026',aut:'Daniel Barruti',   prov:'HIDRAULICA CVC S.A.S.',                                         campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Válvulas compresor camión volcador (fontanini) uso planta y ABA',                       estado:'Verificado',imp:127399.84,  cuenta:'Maquinaria',                   id:10841},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'05/06/2026',faut:'08/06/2026',aut:'Daniel Barruti',   prov:'HIDRAULICA CVC S.A.S.',                                         campo:'25 de Mayo', unidad:'Agricultura',      detalle:'Reparación, armado y reposición partes de hidrolavadora taller',                       estado:'Verificado',imp:945737.96,  cuenta:'Mantenimiento Equipos',        id:10842},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'08/06/2026',faut:'08/06/2026',aut:'Daniel Barruti',   prov:'VALDEZ GABRIEL ALFONSO',                                        campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Servicios casa Rossi',                                                                  estado:'Verificado',imp:80467,      cuenta:'Personal',                     id:10847},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'04/06/2026',faut:'08/06/2026',aut:'Daniel Barruti',   prov:'PRIETO ALICIA INES',                                            campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Alquiler casa Rossi',                                                                  estado:'Verificado',imp:770000,     cuenta:'Personal',                     id:10848},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'06/06/2026',faut:'09/06/2026',aut:'Daniel Barruti',   prov:'TRANSPORTE EL PAMPERO SRL',                                     campo:'25 de Mayo', unidad:'Feedlot',          detalle:'Maquinaria Feedlot',                                                                    estado:'Analista',  imp:201620.51,  cuenta:'Maquinaria',                   id:10852},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'04/06/2026',faut:'09/06/2026',aut:'Daniel Barruti',   prov:'SALINAS ESTEBAN MARCELO',                                       campo:'Ab Energía', unidad:'Planta',           detalle:'AB Agro',                                                                              estado:'Verificado',imp:490000,     cuenta:'Energía / Servicios',          id:10854},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'05/06/2026',faut:'09/06/2026',aut:'Diego Lumani',     prov:'AMOROS EMANUEL',                                                campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Toyota AE828YD — Toyota KNV975',                                                      estado:'Analista',  imp:3678400,    cuenta:'Otros',                        id:10845},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'08/06/2026',faut:'09/06/2026',aut:'Diego Lumani',     prov:'THOME JUAN JOSE',                                               campo:'Winifreda',  unidad:'Cría',            detalle:'Agricultura Winifreda',                                                                 estado:'Verificado',imp:3109312.8,  cuenta:'Otros',                        id:10846},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'01/06/2026',faut:'',          aut:'Pend. de asignar', prov:'BARTUCCI SANDRA LORENA',                                        campo:'Ab Energía', unidad:'Planta',           detalle:'Sin detalle',                                                                           estado:'Gerente',   imp:3903886,    cuenta:'Energía / Servicios',          id:10840},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'19/05/2026',faut:'',          aut:'Pend. de asignar', prov:'SALOMONE JULIO Y SALOMONE MARCELA E. S.H',                     campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Sin detalle',                                                                           estado:'Gerente',   imp:458000,     cuenta:'Otros',                        id:10843},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'04/06/2026',faut:'',          aut:'Pend. de asignar', prov:'TRANSPORTE EL PAMPERO SRL',                                     campo:'Ab Energía', unidad:'Planta',           detalle:'Sin detalle',                                                                           estado:'Gerente',   imp:68197.27,   cuenta:'Energía / Servicios',          id:10844},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'08/06/2026',faut:'',          aut:'Pend. de asignar', prov:'GABRIEL HORACIO FRIDEL',                                        campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Sin detalle',                                                                           estado:'Gerente',   imp:1405296.06, cuenta:'Otros',                        id:10849},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'02/06/2026',faut:'',          aut:'Pend. de asignar', prov:'SPES VIATOR S.A.',                                              campo:'Ab Energía', unidad:'Planta',           detalle:'Sin detalle (EUR 1.700 × $1.700)',                                                                           estado:'Gerente',   imp:2890000,    cuenta:'Energía / Servicios',          id:10850},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'06/06/2026',faut:'',          aut:'Pend. de asignar', prov:'TRANSPORTE EL PAMPERO SRL',                                     campo:'Ab Energía', unidad:'Planta',           detalle:'Sin detalle',                                                                           estado:'Gerente',   imp:52550.3,    cuenta:'Energía / Servicios',          id:10851},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'08/06/2026',faut:'',          aut:'Pend. de asignar', prov:'GARCIA HECTOR FABIAN',                                          campo:'Ab Energía', unidad:'Planta',           detalle:'Sin detalle',                                                                           estado:'Gerente',   imp:2783000,    cuenta:'Energía / Servicios',          id:10853},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'10/06/2026',faut:'',          aut:'Pend. de asignar', prov:'DIEGO NICOLAS BARRUTI',                                         campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Sin detalle',                                                                           estado:'Gerente',   imp:196137.5,   cuenta:'Otros',                        id:10855},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026', femis:'09/06/2026',faut:'',          aut:'Pend. de asignar', prov:'FERRERO TRACTORES S.R.L.',                                      campo:'25 de Mayo', unidad:'A distribuir a CC',detalle:'Sin detalle (USD 247,61 × $1.465)',                                                                           estado:'Gerente',   imp:362748.65,  cuenta:'Otros',                        id:10856},
 ];
  
 let fS='all',fM='all',fU='all',fA='all',sortCol='sem',sortDir=1;
  
 // ── Procesador Excel ──────────────────────────────────────────────────────
 const ESTADO_ORDER={Verificado:4,Analista:3,Gerente:2,Pivot:1};
+const MNAMES_ES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
  
-function weekLabel(dt){
-  if(!dt)return'Sin fecha';
-  if(typeof dt==='string'){try{dt=new Date(dt);}catch{return'Sin fecha';}}
-  if(typeof dt==='number'){dt=new Date(Math.round((dt-25569)*86400*1000));}
-  if(!(dt instanceof Date)||isNaN(dt))return'Sin fecha';
-  const day=dt.getDay()||7; // 1=Mon
-  const mon=new Date(dt); mon.setDate(dt.getDate()-(day-1));
-  const sun=new Date(mon); sun.setDate(mon.getDate()+6);
-  const f=x=>String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0')+'/'+x.getFullYear();
-  return f(mon)+'–'+f(sun);
+function toDate(v){
+  if(!v) return null;
+  if(v instanceof Date) return isNaN(v)?null:v;
+  if(typeof v==='string'){const d=new Date(v);return isNaN(d)?null:d;}
+  if(typeof v==='number'){return new Date(Math.round((v-25569)*86400*1000));}
+  return null;
 }
- 
+function fmtDate(v){const d=toDate(v);if(!d)return'';return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();}
+function weekLbl(v){
+  const d=toDate(v);if(!d)return'Sin fecha';
+  const day=d.getDay()||7;
+  const mon=new Date(d);mon.setDate(d.getDate()-day+1);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  const f=x=>String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0')+'/'+x.getFullYear();
+  return f(mon)+'\u2013'+f(sun);
+}
+function monthLbl(v){const d=toDate(v);if(!d)return'Sin fecha';return MNAMES_ES[d.getMonth()]+' '+d.getFullYear();}
 function fixStr(s){
   return(s||'').replace(/Ã³/g,'ó').replace(/Ã¡/g,'á').replace(/Ã©/g,'é').replace(/Ã±/g,'ñ')
-    .replace(/Ã"/g,'Ó').replace(/Ã‰/g,'É').replace(/Ã/g,'Á').replace(/Â/g,'').replace(/â€"/g,'–').trim();
+    .replace(/Ã"/g,'Ó').replace(/Ã‰/g,'É').replace(/Ã/g,'Á').replace(/Â/g,'').trim();
 }
- 
 function mapCC(det,soc){
   const d=(det||'').toUpperCase();
-  if(/FEED|25-FEED/.test(d))return['25 de Mayo','Feedlot'];
-  if(/WINIFREDA|W-/.test(d))return['Winifreda','Cría'];
-  if(/AB.ENERG/.test(d)||soc==='ABEN')return['Ab Energía','Planta'];
-  if(/EMPRESA.MAQ|25-EMPRESA/.test(d))return['25 de Mayo','Agricultura'];
-  if(soc==='ABEN')return['Ab Energía','Planta'];
+  if(/FEED|25-FEED/.test(d)) return['25 de Mayo','Feedlot'];
+  if(/WINIFREDA|W-/.test(d)) return['Winifreda','Cría'];
+  if(/AB.ENERG/.test(d)||soc==='ABEN') return['Ab Energía','Planta'];
+  if(/EMPRESA.MAQ|25-EMPRESA/.test(d)) return['25 de Mayo','Agricultura'];
+  if(soc==='ABEN') return['Ab Energía','Planta'];
   return['25 de Mayo','A distribuir a CC'];
 }
- 
 function mapCuenta(prov,det,unidad){
   const d=(det||'').toLowerCase(),p=(prov||'').toLowerCase();
-  if(/vacuna|brucelosis|toro|raspaje|veterina|sanidad/.test(d))return'Sanidad / Veterinaria';
-  if(/garcia nicolas/.test(p)||/honorario|asesor/.test(d))return'Honorarios Asesores Externos';
-  if(/flete|frigorifico/.test(d))return'Fletes';
-  if(/chiller|j-50|cableado|roedor|hidrolavadora|reparaci/.test(d))return'Mantenimiento Equipos';
-  if(/maquinaria|generador|cubierta|repuesto|volcador|compresor|válvula|valvula/.test(d))return'Maquinaria';
-  if(/energi/.test(d)||unidad==='Planta')return'Energía / Servicios';
-  if(/personal|pasaje|franco|casa rossi|alquiler|servicio/.test(d))return'Personal';
-  if(/admin/.test(d))return'Administración';
+  if(/vacuna|brucelosis|toro|raspaje|veterina|sanidad/.test(d)) return'Sanidad / Veterinaria';
+  if(/garcia nicolas/.test(p)||/honorario|asesor/.test(d)) return'Honorarios Asesores Externos';
+  if(/flete|frigorifico|anonima/.test(d)) return'Fletes';
+  if(/chiller|j-50|cableado|roedor|hidrolavadora|reparaci/.test(d)) return'Mantenimiento Equipos';
+  if(/maquinaria|generador|cubierta|repuesto|volcador|compresor|valvula/.test(d)) return'Maquinaria';
+  if(/energi/.test(d)||unidad==='Planta') return'Energía / Servicios';
+  if(/personal|pasaje|franco|rossi|alquiler|servicio/.test(d)) return'Personal';
+  if(/admin/.test(d)) return'Administración';
   return'Otros';
 }
- 
 function processExcel(wb){
   let sName=wb.SheetNames.find(n=>/tsdocs/i.test(n))||wb.SheetNames[wb.SheetNames.length-1];
   const ws=wb.Sheets[sName];
-  const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
+  const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
+  if(!rows.length) throw new Error('Hoja vacía');
+  const keys=Object.keys(rows[0]);
+  const fk=patterns=>keys.find(k=>patterns.some(p=>k.toLowerCase().includes(p.toLowerCase())))||null;
+  const CID=fk(['Id Documento']),CPROV=fk(['Raz','Social']),CSOC=fk(['Sociedad']);
+  const CAUT=fk(['Autorizante']),CDET=fk(['Detalle']),CIMP=fk(['Importe']);
+  const CMON=fk(['Moneda']),CCOT=fk(['Cotizac']),CFEMIS=fk(['emisi']);
+  const CFAUT=fk(['autorizacion','autorización']),CFCARGA=fk(['Carga']);
+  const CESTADO=fk(['Workflow','Estado del']);
+  if(!CID||!CIMP) throw new Error('No se encontraron columnas clave');
   const byId={};
   rows.forEach(r=>{
-    const id=r['Id Documento']||r['Id_Documento'];
-    if(!id)return;
-    const estado=r['Estado del Workflow']||'';
+    const id=r[CID];if(!id)return;
+    const estado=r[CESTADO]||'';
     const ord=ESTADO_ORDER[estado]||0;
-    const fcarga=r['Fecha de Carga']||'';
-    if(!byId[id]){
-      byId[id]={row:r,ord,fcarga_min:fcarga};
-    } else {
+    const fc=r[CFCARGA]||'';
+    if(!byId[id]){byId[id]={row:r,ord,fcarga_min:fc};}
+    else{
       if(ord>byId[id].ord){byId[id].row=r;byId[id].ord=ord;}
-      if(fcarga&&(!byId[id].fcarga_min||fcarga<byId[id].fcarga_min))byId[id].fcarga_min=fcarga;
+      const d1=toDate(fc),d2=toDate(byId[id].fcarga_min);
+      if(d1&&(!d2||d1<d2)) byId[id].fcarga_min=fc;
     }
   });
   const result=[];
   Object.entries(byId).forEach(([id,info])=>{
     const r=info.row;
-    const prov=fixStr(r['Razón Social']||r['RazÃ³n Social']||'');
-    const soc=r['Sociedad']||'';
-    const aut=r['Autorizante']||'Pend. de asignar';
-    const det=fixStr(r['Detalle']||'');
-    const estado=r['Estado del Workflow']||'';
-    const moneda=r['Moneda']||'PESO';
-    const cotiz=parseFloat(r['Cotizacion'])||1;
-    const imp_raw=parseFloat((r['Importe']||'0').toString().replace(',','.'))||0;
+    const prov=fixStr(r[CPROV]||'');
+    const soc=r[CSOC]||'';
+    const aut=fixStr(r[CAUT]||'')||'Pend. de asignar';
+    const det=fixStr(r[CDET]||'');
+    const estado=r[CESTADO]||'';
+    const moneda=r[CMON]||'PESO';
+    const cotiz=parseFloat(r[CCOT])||1;
+    const imp_raw=parseFloat(String(r[CIMP]||'0').replace(',','.'))||0;
     const imp=Math.round((moneda!=='PESO'?imp_raw*cotiz:imp_raw)*100)/100;
-    const fEmisRaw=r['Fecha de emisión']||r['Fecha de emisiÃ³n']||'';
-    const fAutRaw=r['Fecha de autorizacion']||'';
-    function fmtD(v){if(!v)return'';if(typeof v==='string'&&v.match(/\d{4}-\d{2}-\d{2}/)){const p=v.slice(0,10).split('-');return p[2]+'/'+p[1]+'/'+p[0];}if(v instanceof Date||typeof v==='object'){try{const d=new Date(v);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();}catch{return'';}}return'';}
-    const femis=fmtD(fEmisRaw); const faut_str=fmtD(fAutRaw);
+    const femis=fmtDate(r[CFEMIS]);
+    const faut=fmtDate(r[CFAUT]);
     const [campo,unidad]=mapCC(det,soc);
     const cuenta=mapCuenta(prov,det,unidad);
-    const sem=weekLabel(info.fcarga_min);
-    const detClean=det.replace(/=CC:[^=]*/g,'').replace(/\s+/g,' ').trim()||'Sin detalle';
-    if(!AUT_COLORS[aut])AUT_COLORS[aut]=AUT_PAL[Object.keys(AUT_COLORS).length%AUT_PAL.length];
-    const mesN=sem.match(/\/(\d{4})/)?.[1]||''; const mesM=sem.slice(3,5);
-    const MNAMES={'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo','06':'Junio','07':'Julio','08':'Agosto','09':'Septiembre','10':'Octubre','11':'Noviembre','12':'Diciembre'};
-    const mes=(MNAMES[mesM]||mesM)+' '+mesN;
-    result.push({id,prov,aut,campo,unidad,detalle:detClean,estado,imp,cuenta,sem,mes,femis,faut:faut_str});
+    const sem=weekLbl(info.fcarga_min);
+    const mes=monthLbl(info.fcarga_min);
+    let detClean=det.replace(/=CC:[^\s]*/g,'').replace(/25-[A-ZÁÉÍÓÚÑ ]+/g,'').replace(/AB ENERG[ÁA]/gi,'AB Energía').replace(/\s+/g,' ').trim()||'Sin detalle';
+    if(moneda&&moneda!=='PESO'){
+      const sym=moneda==='EURO'?'EUR':moneda==='DOLAR'?'USD':moneda;
+      const impFmt=imp_raw.toLocaleString('es-AR',{minimumFractionDigits:imp_raw%1?2:0,maximumFractionDigits:2});
+      const cotFmt=cotiz.toLocaleString('es-AR');
+      detClean+=` (${sym} ${impFmt} × $${cotFmt})`;
+    }
+    if(!AUT_COLORS[aut]) AUT_COLORS[aut]=AUT_PAL[Object.keys(AUT_COLORS).length%AUT_PAL.length];
+    result.push({id:parseInt(id)||id,prov,aut,campo,unidad,detalle:detClean,estado,imp,cuenta,sem,mes,femis,faut});
   });
   return result;
 }
