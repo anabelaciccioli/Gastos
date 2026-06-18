@@ -19,10 +19,6 @@ header p{color:var(--muted);font-size:12px;margin-top:3px;}
 .header-right{display:flex;align-items:center;gap:12px;}
 .btn-upload{display:inline-flex;align-items:center;gap:8px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-b);transition:all .15s;}
 .btn-upload:hover{border-color:var(--accent);color:#fff;}
-#file-input{display:none;}
-.upload-state{font-size:12px;color:var(--muted);}
-.upload-state.ok{color:var(--green);}
-.upload-state.err{color:#e74c3c;}
 .tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:stretch;flex-wrap:wrap;}
 .tab-group{display:flex;align-items:center;gap:3px;padding:10px 0;margin-right:22px;}
 .tab-group-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-right:8px;white-space:nowrap;}
@@ -95,16 +91,10 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
     <p><span style="color:var(--text);font-weight:500">AB Agro · AB Energía</span> &nbsp;·&nbsp; Plataforma TSDOCS &nbsp;·&nbsp; <span id="header-periodo">Todas las semanas</span></p>
   </div>
   <div class="header-right">
-    <span class="upload-state" id="upload-state"></span>
     <button class="btn-upload" onclick="exportExcel()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       Exportar filtrado
     </button>
-    <label class="btn-upload" for="file-input">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Actualizar con Excel nuevo
-    </label>
-    <input type="file" id="file-input" accept=".xlsx,.xls">
   </div>
 </header>
 
@@ -240,65 +230,6 @@ function mapCuenta(prov,det,unidad){
   if(/admin/.test(d)) return'Administración';
   return'Otros';
 }
-function processExcel(wb){
-  let sName=wb.SheetNames.find(n=>/tsdocs/i.test(n))||wb.SheetNames[wb.SheetNames.length-1];
-  const ws=wb.Sheets[sName];
-  const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
-  if(!rows.length) throw new Error('Hoja vacía');
-  const keys=Object.keys(rows[0]);
-  const fk=patterns=>keys.find(k=>patterns.some(p=>k.toLowerCase().includes(p.toLowerCase())))||null;
-  const CID=fk(['Id Documento']),CPROV=fk(['Raz','Social']),CSOC=fk(['Sociedad']);
-  const CAUT=fk(['Autorizante']),CDET=fk(['Detalle']),CIMP=fk(['Importe']);
-  const CMON=fk(['Moneda']),CCOT=fk(['Cotizac']),CFEMIS=fk(['emisi']);
-  const CFAUT=fk(['autorizacion','autorización']),CFCARGA=fk(['Carga']);
-  const CESTADO=fk(['Workflow','Estado del']);
-  if(!CID||!CIMP) throw new Error('No se encontraron columnas clave');
-  const byId={};
-  rows.forEach(r=>{
-    const id=r[CID];if(!id)return;
-    const estado=r[CESTADO]||'';
-    const ord=ESTADO_ORDER[estado]||0;
-    const fc=r[CFCARGA]||'';
-    if(!byId[id]){byId[id]={row:r,ord,fcarga_min:fc};}
-    else{
-      if(ord>byId[id].ord){byId[id].row=r;byId[id].ord=ord;}
-      const d1=toDate(fc),d2=toDate(byId[id].fcarga_min);
-      if(d1&&(!d2||d1<d2)) byId[id].fcarga_min=fc;
-    }
-  });
-  const result=[];
-  Object.entries(byId).forEach(([id,info])=>{
-    const r=info.row;
-    const prov=fixStr(r[CPROV]||'');
-    const soc=r[CSOC]||'';
-    const aut=fixStr(r[CAUT]||'')||'Pend. de asignar';
-    const det=fixStr(r[CDET]||'');
-    const estado=r[CESTADO]||'';
-    const moneda=r[CMON]||'PESO';
-    const cotiz=parseFloat(r[CCOT])||1;
-    const imp_raw=parseFloat(String(r[CIMP]||'0').replace(',','.'))||0;
-    const imp=Math.round((moneda!=='PESO'?imp_raw*cotiz:imp_raw)*100)/100;
-    const femis=fmtDate(r[CFEMIS]);
-    const faut=fmtDate(r[CFAUT]);
-    let [campo,unidad]=mapCC(det,soc);
-    let cuenta=mapCuenta(prov,det,unidad);
-    // Reglas fijas por proveedor
-    if(/garcia nicolas daniel/i.test(prov)){campo='25 de Mayo';unidad='Agricultura';cuenta='Honorarios Asesores Externos';}
-    const sem=weekLbl(info.fcarga_min);
-    const mes=monthLbl(info.fcarga_min);
-    let detClean=det.replace(/=CC:[^\s]*/g,'').replace(/25-[A-ZÁÉÍÓÚÑ ]+/g,'').replace(/AB ENERG[ÁA]/gi,'AB Energía').replace(/\s+/g,' ').trim()||'Sin detalle';
-    if(moneda&&moneda!=='PESO'){
-      const sym=moneda==='EURO'?'EUR':moneda==='DOLAR'?'USD':moneda;
-      const impFmt=imp_raw.toLocaleString('es-AR',{minimumFractionDigits:imp_raw%1?2:0,maximumFractionDigits:2});
-      const cotFmt=cotiz.toLocaleString('es-AR');
-      detClean+=` (${sym} ${impFmt} × $${cotFmt})`;
-    }
-    if(!AUT_COLORS[aut]) AUT_COLORS[aut]=AUT_PAL[Object.keys(AUT_COLORS).length%AUT_PAL.length];
-    result.push({id:parseInt(id)||id,prov,aut,campo,unidad,detalle:detClean,estado,imp,cuenta,sem,mes,femis,faut});
-  });
-  return result;
-}
-
 // ── Render ────────────────────────────────────────────────────────────────
 function filtered(){return DATA.filter(r=>(fM==='all'||r.mes===fM)&&(fS==='all'||r.sem===fS)&&(fU==='all'||r.unidad===fU)&&(fA==='all'||r.aut===fA));}
 function sumBy(rows,key){const m={};rows.forEach(r=>{m[r[key]]=(m[r[key]]||0)+r.imp;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
@@ -402,45 +333,6 @@ function render(){
 
 function resetF(){fM='all';fS='all';fU='all';fA='all';buildAllTabs();render();}
 
-document.getElementById('file-input').addEventListener('change',function(e){
-  const file=e.target.files[0];if(!file)return;
-  const st=document.getElementById('upload-state');
-  st.className='upload-state';st.textContent='Procesando…';
-  const reader=new FileReader();
-  reader.onload=function(ev){
-    try{
-      const wb=XLSX.read(ev.target.result,{type:'array',cellDates:true});
-      const newData=processExcel(wb);
-      if(!newData.length)throw new Error('No se encontraron comprobantes');
-      const semsNuevas=new Set(newData.map(r=>r.sem));
-      DATA=DATA.filter(r=>!semsNuevas.has(r.sem)).concat(newData);
-      fS='all';fU='all';fA='all';
-      buildAllTabs();render();
-      st.className='upload-state ok';
-      st.textContent='✓ '+file.name+' · '+DATA.length+' comp. totales';
-    }catch(err){
-      st.className='upload-state err';
-      st.textContent='⚠ Error: '+err.message;
-    }
-  };
-  reader.readAsArrayBuffer(file);
-  this.value='';
-});
-
-// Export filtered data to Excel
-function exportExcel(){
-  const rows=filtered();
-  if(!rows.length){alert('No hay datos para exportar.');return;}
-  const headers=['Autorizante','Proveedor','Campo','Unidad','Detalle','Estado','Importe','Cuenta','Semana','F. Emisión','F. Autorización','Id'];
-  const data=[headers,...rows.map(r=>[r.aut,r.prov,r.campo,r.unidad,r.detalle,r.estado,r.imp,r.cuenta,r.sem,r.femis||'',r.faut||'',r.id||''])];
-  const ws=XLSX.utils.aoa_to_sheet(data);
-  // Column widths
-  ws['!cols']=[{wch:18},{wch:35},{wch:14},{wch:18},{wch:40},{wch:12},{wch:14},{wch:22},{wch:22},{wch:12},{wch:16},{wch:8}];
-  const wb=XLSX.utils.book_new();
-  const label=fS==='all'?'Todos':fS.replace(/\//g,'-');
-  XLSX.utils.book_append_sheet(wb,ws,'Gastos '+label);
-  XLSX.writeFile(wb,'Gastos_ABAgro_'+label+'.xlsx');
-}
 
 // Attach sort listeners once
 document.querySelectorAll('thead th.sortable').forEach(th=>{
@@ -450,11 +342,6 @@ document.querySelectorAll('thead th.sortable').forEach(th=>{
   });
 });
 
-buildAllTabs();
-render();
-</script>
-</body>
-</html>
 buildAllTabs();
 render();
 </script>
