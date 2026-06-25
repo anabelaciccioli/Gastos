@@ -103,6 +103,12 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
   <div class="tab-group"><span class="tab-group-label">Semana</span><div id="tabs-semana" style="display:flex;gap:3px;align-items:center;"></div></div>
   <div class="tab-group"><span class="tab-group-label">Unidad</span><div id="tabs-unidad" style="display:flex;gap:3px;align-items:center;"></div></div>
   <div class="tab-group"><span class="tab-group-label">Autorizante</span><div id="tabs-aut" style="display:flex;gap:3px;align-items:center;"></div></div>
+  <div class="tab-group">
+    <span class="tab-group-label">Proveedor</span>
+    <select id="select-prov" onchange="fP=this.value;render()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;font-family:var(--font-b);cursor:pointer;min-width:180px;max-width:260px;">
+      <option value="all">Todos</option>
+    </select>
+  </div>
   <div class="tab-info">
     <span class="tab-count" id="tab-count">—</span>
     <button class="btn-reset" onclick="resetF()">✕ Limpiar</button>
@@ -182,7 +188,7 @@ let DATA=[
   {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'02/06/2026',faut:'10/06/2026',aut:'Ludmila Meiners',  prov:'SPES VIATOR S.A.',                                        campo:'Ab Energía',unidad:'Planta',          detalle:'Pick up magnético N° parte 1960620 Marca Guascor (EUR 1.700,00 × $1.700)',                                          estado:'Verificado',imp:2890000,    cuenta:'Energía / Servicios',          id:10850},
   {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'08/06/2026',faut:'10/06/2026',aut:'Ludmila Meiners',  prov:'GARCIA HECTOR FABIAN',                                    campo:'Ab Energía',unidad:'Planta',          detalle:'Arreglos en Cisterna y pala botcat',                                                                                         estado:'Verificado',imp:2783000,    cuenta:'Energía / Servicios',          id:10853},
   {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'09/06/2026',faut:'10/06/2026',aut:'Ludmila Meiners',  prov:'TELECTRON INGENIERIA SAS',                                campo:'Ab Energía',unidad:'Planta',          detalle:'Viaje de AyronOne a 25 de mayo, instalación de servidor',                                                               estado:'Verificado',imp:2139522,    cuenta:'Energía / Servicios',          id:10857},
-  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'09/06/2026',faut:'10/06/2026',aut:'Ludmila Meiners',  prov:'GARCIA HECTOR FABIAN',                                    campo:'Ab Energía',unidad:'Planta',          detalle:'2.332 litros de gasoil entregados a Fabian Garcia',                                                                          estado:'Verificado',imp:6518173.2,  cuenta:'Energía / Servicios',          id:10859},
+  {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'09/06/2026',faut:'10/06/2026',aut:'Ludmila Meiners',  prov:'GARCIA HECTOR FABIAN',                                    campo:'Ab Energía',unidad:'Planta',          detalle:'2.332 litros de gasoil entregados a Fabian Garcia — retiro orujo',                                                                          estado:'Verificado',imp:6518173.2,  cuenta:'Energía / Servicios',          id:10859},
   {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'10/06/2026',faut:'17/06/2026',aut:'Ludmila Meiners',  prov:'SOARZO ALBERTO',                                          campo:'Ab Energía',unidad:'Planta',          detalle:'NC combustible entregado (3.088 lts a $2.332/lt) para viajes de orujo CCU',                                                   estado:'Verificado',imp:8713471.36, cuenta:'Energía / Servicios',          id:10861},
   {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'10/06/2026',faut:'17/06/2026',aut:'Ludmila Meiners',  prov:'SOARZO ALBERTO',                                          campo:'Ab Energía',unidad:'Planta',          detalle:'9 viajes de orujo de CCU camión terciarizado',                                                                          estado:'Verificado',imp:8712000,    cuenta:'Energía / Servicios',          id:10862},
   {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'10/06/2026',faut:'17/06/2026',aut:'Ludmila Meiners',  prov:'SANCHEZ CARLOS ALBERTO',                                  campo:'Ab Energía',unidad:'Planta',          detalle:'Un viaje de purín de granja el amanecer',                                                                               estado:'Verificado',imp:1569505.52, cuenta:'Energía / Servicios',          id:10863},
@@ -199,7 +205,7 @@ let DATA=[
   {sem:'08/06/2026–14/06/2026',mes:'Junio 2026',femis:'09/06/2026',faut:'',          aut:'Pend. de asignar', prov:'TRANSPORTE EL PAMPERO SRL',                               campo:'Ab Energía',unidad:'Planta',          detalle:'Sin detalle',                                                                                                                   estado:'Gerente',   imp:49137.98,   cuenta:'Energía / Servicios',          id:10873},
 ];
 
-let fS='all',fM='all',fU='all',fA='all',sortCol='sem',sortDir=1;
+let fS='all',fM='all',fU='all',fA='all',fP='all',sortCol='sem',sortDir=1;
 
 // ── Procesador Excel ──────────────────────────────────────────────────────
 const ESTADO_ORDER={Verificado:4,Analista:3,Gerente:2,Pivot:1};
@@ -248,7 +254,7 @@ function mapCuenta(prov,det,unidad){
   return'Otros';
 }
 // ── Render ────────────────────────────────────────────────────────────────
-function filtered(){return DATA.filter(r=>(fM==='all'||r.mes===fM)&&(fS==='all'||r.sem===fS)&&(fU==='all'||r.unidad===fU)&&(fA==='all'||r.aut===fA));}
+function filtered(){return DATA.filter(r=>(fM==='all'||r.mes===fM)&&(fS==='all'||r.sem===fS)&&(fU==='all'||r.unidad===fU)&&(fA==='all'||r.aut===fA)&&(fP==='all'||r.prov===fP));}
 function sumBy(rows,key){const m={};rows.forEach(r=>{m[r[key]]=(m[r[key]]||0)+r.imp;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
 
 const PROV_COLORS={};
@@ -321,6 +327,11 @@ function buildAllTabs(){
   buildTabGroup('tabs-semana',[...new Set(DATA.map(r=>r.sem))].sort(),fS,'s','on-s');
   buildTabGroup('tabs-unidad',[...new Set(DATA.map(r=>r.unidad))].sort(),fU,'u','on-u');
   buildTabGroup('tabs-aut',  [...new Set(DATA.map(r=>r.aut))].sort(),fA,'a','on-a');
+  // Populate proveedor dropdown
+  const provSel=document.getElementById('select-prov');
+  const provs=[...new Set(DATA.map(r=>r.prov))].sort();
+  provSel.innerHTML='<option value="all">Todos</option>'+provs.map(p=>`<option value="${p.replace(/"/g,'&quot;')}" ${fP===p?'selected':''}>${p}</option>`).join('');
+  provSel.onchange=()=>{fP=provSel.value;render();};
 }
 function monthOrder(m){
   const mo={'Enero':1,'Febrero':2,'Marzo':3,'Abril':4,'Mayo':5,'Junio':6,'Julio':7,'Agosto':8,'Septiembre':9,'Octubre':10,'Noviembre':11,'Diciembre':12};
@@ -348,7 +359,7 @@ function render(){
   renderTable(rows);
 }
 
-function resetF(){fM='all';fS='all';fU='all';fA='all';buildAllTabs();render();}
+function resetF(){fM='all';fS='all';fU='all';fA='all';fP='all';const ps=document.getElementById('select-prov');if(ps)ps.value='all';buildAllTabs();render();}
 
 
 // Attach sort listeners once
@@ -359,11 +370,6 @@ document.querySelectorAll('thead th.sortable').forEach(th=>{
   });
 });
 
-buildAllTabs();
-render();
-</script>
-</body>
-</html>
 buildAllTabs();
 render();
 </script>
