@@ -135,7 +135,7 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
     <div class="panel-title">Detalle de comprobantes</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th class="sortable" data-col="aut">Autorizante</th><th class="sortable" data-col="prov">Proveedor</th><th>Detalle</th><th class="sortable" data-col="imp" style="text-align:right">Importe</th></tr></thead>
+        <thead><tr><th class="sortable" data-col="aut">Autorizante</th><th class="sortable" data-col="prov" style="width:180px">Proveedor</th><th>Detalle</th><th class="sortable" data-col="imp" style="text-align:right">Importe</th></tr></thead>
         <tbody id="tbody-det"></tbody>
       </table>
     </div>
@@ -343,7 +343,7 @@ function renderTable(rows){
   const sc=s=>({Verificado:'sv',Analista:'sa',Gerente:'sg',Pivot:'sp'}[s]||'sp');
   let html='';
   sorted.forEach(r=>{
-    html+=`<tr class="${r.aut==='Pend. de asignar'?'pend-row':''}"><td>${r.aut}</td><td>${r.prov}</td><td style="white-space:normal;word-break:break-word;max-width:400px;line-height:1.4">${r.detalle}</td><td class="mono" style="text-align:right">${fmt(r.imp)}</td></tr>`;
+    html+=`<tr class="${r.aut==='Pend. de asignar'?'pend-row':''}"><td>${r.aut}</td><td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${r.prov}">${r.prov}</td><td style="white-space:normal;word-break:break-word;min-width:500px;line-height:1.4">${r.detalle}</td><td class="mono" style="text-align:right">${fmt(r.imp)}</td></tr>`;
   });
   html+=`<tr class="tot-r"><td colspan="3" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td><td class="mono" style="text-align:right">${fmt(total)}</td><td colspan="3"></td></tr>`;
   tb.innerHTML=html;
