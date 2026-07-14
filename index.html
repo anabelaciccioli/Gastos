@@ -261,7 +261,7 @@ let DATA=[
   {sem:'22/06/2026–28/06/2026',mes:'Junio 2026',femis:'',faut:'',aut:'Sandra Bartucci',prov:'QUIROGA EVER MARIANO',campo:'Ab Energía',unidad:'Planta',detalle:'Control de roedores de planta',estado:'Verificado',imp:320000.0,cuenta:'Mantenimiento Equipos',id:10927},
 ];
 
-let fS='all',fM='all',fU='all',fA='all',fP='all',sortCol='prov',sortDir=1;
+let fS='all',fM='all',fU='all',fA='all',fP='all',sortCol='aut',sortDir=1,sortCol2='prov',sortDir2=1;
 
 // ── Procesador Excel ──────────────────────────────────────────────────────
 const ESTADO_ORDER={Verificado:4,Analista:3,Gerente:2,Pivot:1};
@@ -331,8 +331,11 @@ function renderTable(rows){
   // Sort
   const sorted=[...rows].sort((a,b)=>{
     let av=a[sortCol],bv=b[sortCol];
-    if(sortCol==='imp'){return(av-bv)*sortDir;}
-    return String(av||'').localeCompare(String(bv||''),'es')*sortDir;
+    let r1=sortCol==='imp'?(av-bv)*sortDir:String(av||'').localeCompare(String(bv||''),'es')*sortDir;
+    if(r1!==0)return r1;
+    // secondary sort
+    let av2=a[sortCol2],bv2=b[sortCol2];
+    return sortCol2==='imp'?(av2-bv2)*sortDir2:String(av2||'').localeCompare(String(bv2||''),'es')*sortDir2;
   });
   // Update header arrows
   document.querySelectorAll('thead th.sortable').forEach(th=>{
@@ -421,7 +424,12 @@ function resetF(){fM='all';fS='all';fU='all';fA='all';fP='all';const ps=document
 // Attach sort listeners once
 document.querySelectorAll('thead th.sortable').forEach(th=>{
   th.addEventListener('click',()=>{
-    if(sortCol===th.dataset.col){sortDir*=-1;}else{sortCol=th.dataset.col;sortDir=1;}
+    if(sortCol===th.dataset.col){
+      sortDir*=-1;
+    } else {
+      sortCol2=sortCol; sortDir2=sortDir; // previous primary becomes secondary
+      sortCol=th.dataset.col; sortDir=1;
+    }
     renderTable(filtered());
   });
 });
