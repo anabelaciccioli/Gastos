@@ -135,7 +135,7 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
     <div class="panel-title">Detalle de comprobantes</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th class="sortable" data-col="aut">Autorizante</th><th class="sortable" data-col="prov">Proveedor</th><th class="sortable" data-col="campo">Campo</th><th class="sortable" data-col="unidad">Unidad</th><th>Detalle</th><th class="sortable" data-col="estado">Estado</th><th class="sortable" data-col="imp" style="text-align:right">Importe</th><th class="sortable" data-col="cuenta">Cuenta</th><th class="sortable" data-col="sem">Semana</th><th class="sortable" data-col="femis">F. Emisión</th><th class="sortable" data-col="faut">F. Autorización</th><th>Id</th></tr></thead>
+        <thead><tr><th class="sortable" data-col="aut">Autorizante</th><th class="sortable" data-col="prov">Proveedor</th><th>Detalle</th><th class="sortable" data-col="imp" style="text-align:right">Importe</th></tr></thead>
         <tbody id="tbody-det"></tbody>
       </table>
     </div>
@@ -261,7 +261,7 @@ let DATA=[
   {sem:'22/06/2026–28/06/2026',mes:'Junio 2026',femis:'',faut:'',aut:'Sandra Bartucci',prov:'QUIROGA EVER MARIANO',campo:'Ab Energía',unidad:'Planta',detalle:'Control de roedores de planta',estado:'Verificado',imp:320000.0,cuenta:'Mantenimiento Equipos',id:10927},
 ];
 
-let fS='all',fM='all',fU='all',fA='all',fP='all',sortCol='sem',sortDir=1;
+let fS='all',fM='all',fU='all',fA='all',fP='all',sortCol='prov',sortDir=1;
 
 // ── Procesador Excel ──────────────────────────────────────────────────────
 const ESTADO_ORDER={Verificado:4,Analista:3,Gerente:2,Pivot:1};
@@ -343,9 +343,9 @@ function renderTable(rows){
   const sc=s=>({Verificado:'sv',Analista:'sa',Gerente:'sg',Pivot:'sp'}[s]||'sp');
   let html='';
   sorted.forEach(r=>{
-    html+=`<tr class="${r.aut==='Pend. de asignar'?'pend-row':''}"><td>${r.aut}</td><td>${r.prov}</td><td>${r.campo}</td><td class="dim">${r.unidad}</td><td class="dim det-cell" title="${r.detalle}" onclick="this.classList.toggle('expanded')">${r.detalle}</td><td><span class="bs ${sc(r.estado)}"><span class="bd"></span>${r.estado}</span></td><td class="mono" style="text-align:right">${fmt(r.imp)}</td><td class="dim">${r.cuenta}</td><td class="mono dim">${r.sem}</td><td class="mono dim">${r.femis||'—'}</td><td class="mono dim">${r.faut||'—'}</td><td class="mono dim">${r.id||'—'}</td></tr>`;
+    html+=`<tr class="${r.aut==='Pend. de asignar'?'pend-row':''}"><td>${r.aut}</td><td>${r.prov}</td><td style="white-space:normal;word-break:break-word;max-width:400px;line-height:1.4">${r.detalle}</td><td class="mono" style="text-align:right">${fmt(r.imp)}</td></tr>`;
   });
-  html+=`<tr class="tot-r"><td colspan="8" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td><td class="mono" style="text-align:right">${fmt(total)}</td><td colspan="3"></td></tr>`;
+  html+=`<tr class="tot-r"><td colspan="3" style="text-align:right;padding-right:8px">TOTAL FILTRADO</td><td class="mono" style="text-align:right">${fmt(total)}</td><td colspan="3"></td></tr>`;
   tb.innerHTML=html;
 }
 
