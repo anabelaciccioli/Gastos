@@ -17,7 +17,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:2
 header h1{font-family:var(--font-d);font-size:24px;font-weight:400;color:#fff;}
 header p{color:var(--muted);font-size:12px;margin-top:3px;}
 .header-right{display:flex;align-items:center;gap:12px;}
-.btn-upload{display:inline-flex;align-items:center;gap:8px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-b);transition:all .15s;}
+.btn-upload{display:inline-flex;align-items:center;gap:8px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-b);transition:all .15s;}
 .btn-upload:hover{border-color:var(--accent);color:#fff;}
 .tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:stretch;flex-wrap:wrap;}
 .tab-group{display:flex;align-items:center;gap:3px;padding:10px 0;margin-right:22px;}
@@ -30,9 +30,9 @@ header p{color:var(--muted);font-size:12px;margin-top:3px;}
 .tab-sem:hover{background:var(--surface2);color:var(--text);}
 .tab-sem.on-s{background:rgba(155,89,182,.18);color:#c39ef8;font-weight:600;}
 .tab-sem-total{font-size:10px;font-weight:400;color:var(--muted);margin-top:1px;}
-.tab-sem.on-s .tab-sem-total{color:#9b7fd4;}
-tr.pend-row td{background:rgba(230,126,34,.06);}
-tr.pend-row td:first-child{border-left:2px solid rgba(230,126,34,.5);}
+.tab-sem.on-s .tab-sem-total{color:#7c5cc0;}
+tr.pend-row td{background:rgba(230,126,34,.08);}
+tr.pend-row td:first-child{border-left:2px solid rgba(230,126,34,.7);}
 .tab.on-u{background:rgba(79,142,247,.15);color:#7cb9ff;font-weight:600;}
 .tab.on-a{background:rgba(240,165,0,.14);color:#f0c040;font-weight:600;}
 .tab-info{margin-left:auto;display:flex;align-items:center;gap:10px;padding:10px 0;}
@@ -45,9 +45,9 @@ main{padding:28px 40px;max-width:1300px;margin:0 auto;}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .kpi.k1::before{background:linear-gradient(90deg,var(--accent),#7cb9ff);}
 .kpi.k2::before{background:linear-gradient(90deg,#9b59b6,#d7a0f8);}
-.kpi.k3::before{background:linear-gradient(90deg,var(--yellow),#ffe0a0);}
-.kpi.k4::before{background:linear-gradient(90deg,var(--green),#a0f8c0);}
-.kpi.k5::before{background:linear-gradient(90deg,#e67e22,#f8c0a0);}
+.kpi.k3::before{background:linear-gradient(90deg,#e6960a,#f5c842);}
+.kpi.k4::before{background:linear-gradient(90deg,#1a7a3c,#4ec87a);}
+.kpi.k5::before{background:linear-gradient(90deg,#e67e22,#f5a05a);}
 .kpi-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
 .kpi-value{font-family:var(--font-m);font-size:20px;font-weight:500;color:#fff;}
 .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;}
@@ -63,18 +63,18 @@ main{padding:28px 40px;max-width:1300px;margin:0 auto;}
 table{width:100%;border-collapse:collapse;font-size:12.5px;}
 thead th{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface);}thead th.sortable{cursor:pointer;user-select:none;}thead th.sortable:hover{color:var(--text);}thead th.sort-asc::after{content:" ↑";color:var(--accent);}thead th.sort-desc::after{content:" ↓";color:var(--accent);}
 tbody tr{border-bottom:1px solid rgba(42,47,66,.5);transition:background .15s;}
-tbody tr:hover{background:rgba(79,142,247,.04);}
+tbody tr:hover{background:rgba(79,142,247,.06);}
 tbody td{padding:8px 10px;color:var(--text);vertical-align:middle;}
 .mono{font-family:var(--font-m);font-size:12px;}
 .dim{color:var(--muted);}
 .bs{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;}
 .bd{width:5px;height:5px;border-radius:50%;}
-.sv{background:rgba(46,204,113,.1);color:#2ecc71;}.sv .bd{background:#2ecc71;}
-.sa{background:rgba(240,165,0,.1);color:#f0a500;}.sa .bd{background:#f0a500;}
-.sg{background:rgba(230,126,34,.1);color:#e67e22;}.sg .bd{background:#e67e22;}
+.sv{background:rgba(26,122,60,.1);color:#1a7a3c;}.sv .bd{background:#1a7a3c;}
+.sa{background:rgba(160,112,0,.12);color:#a07000;}.sa .bd{background:#a07000;}
+.sg{background:rgba(180,90,10,.1);color:#b45a0a;}.sg .bd{background:#b45a0a;}
 .sp{background:rgba(85,91,114,.15);color:#aaa;}.sp .bd{background:#888;}
-tr.sub-r td{background:rgba(255,255,255,.02);font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;}
-tr.tot-r td{border-top:2px solid var(--border);font-weight:700;color:#fff;font-size:13px;padding-top:10px;}
+tr.sub-r td{background:rgba(0,0,0,.02);font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;}
+tr.tot-r td{border-top:2px solid var(--border);font-weight:700;color:var(--text);font-size:13px;padding-top:10px;}
 .det-cell{max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:all .2s;}
 .det-cell:hover{color:var(--text);}
 .det-cell.expanded{white-space:normal;max-width:320px;overflow:visible;background:var(--surface2);border-radius:4px;padding:4px 6px;color:var(--text);}
@@ -106,7 +106,7 @@ footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;bor
   <div class="tab-group"><span class="tab-group-label">Autorizante</span><div id="tabs-aut" style="display:flex;gap:3px;align-items:center;"></div></div>
   <div class="tab-group">
     <span class="tab-group-label">Proveedor</span>
-    <select id="select-prov" onchange="fP=this.value;render()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;font-family:var(--font-b);cursor:pointer;min-width:180px;max-width:260px;">
+    <select id="select-prov" onchange="fP=this.value;render()" style="background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;font-family:var(--font-b);cursor:pointer;min-width:180px;max-width:260px;">
       <option value="all">Todos</option>
     </select>
   </div>
