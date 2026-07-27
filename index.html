@@ -442,7 +442,11 @@ function buildTabGroup(cid,values,cur,type,cls){
 
 function buildAllTabs(){
   buildTabGroup('tabs-mes',   [...new Set(DATA.map(r=>r.mes))].sort((a,b)=>monthOrder(a)-monthOrder(b)),fM,'m','on-m');
-  buildTabGroup('tabs-semana',[...new Set(DATA.map(r=>r.sem))].sort(),fS,'s','on-s');
+  const semsSorted=[...new Set(DATA.map(r=>r.sem))].sort((a,b)=>{
+    const toMs=s=>{const p=s.slice(0,10).split('/');return new Date(p[2],p[1]-1,p[0]).getTime();};
+    return toMs(a)-toMs(b);
+  });
+  buildTabGroup('tabs-semana',semsSorted,fS,'s','on-s');
   buildTabGroup('tabs-unidad',[...new Set(DATA.map(r=>r.unidad))].sort(),fU,'u','on-u');
   buildTabGroup('tabs-aut',  [...new Set(DATA.map(r=>r.aut))].sort(),fA,'a','on-a');
   // Populate proveedor dropdown
