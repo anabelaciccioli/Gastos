@@ -80,7 +80,9 @@ tr.tot-r td{border-top:2px solid var(--border);font-weight:700;color:var(--text)
 .det-cell.expanded{white-space:normal;max-width:320px;overflow:visible;background:var(--surface2);border-radius:4px;padding:4px 6px;color:var(--text);}
 .empty-msg{text-align:center;color:var(--muted);padding:28px;font-size:13px;}
 .sem-month-group{display:flex;align-items:center;gap:6px;padding:8px 0 4px 0;width:100%;}
-.sem-month-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.sem-month-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);white-space:nowrap;cursor:pointer;padding:2px 8px;border-radius:4px;transition:all .15s;}
+.sem-month-label:hover{background:rgba(79,142,247,.1);color:var(--accent);}
+.sem-month-label.active-month{background:rgba(79,142,247,.15);color:var(--accent);}
 .sem-month-line{flex:1;height:1px;background:var(--border);}
 .sem-month-weeks{display:flex;gap:3px;flex-wrap:wrap;}
 footer{text-align:center;padding:22px 40px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:8px;}
@@ -514,7 +516,7 @@ let DATA=[
   {sem:'29/06/2026–05/07/2026',mes:'Julio 2026',femis:'29/06/2026',faut:'02/07/2026',aut:'Sandra Bartucci',prov:'GRISENTI REFRIGERACION SA',campo:'Ab Energía',unidad:'Planta',detalle:'OCP-00018: Repuesto chillers J-501 y J-502',estado:'Verificado',imp:1572243.75,cuenta:'Mantenimiento Equipos',id:10970}
 ];
 
-let fS='all',fU='all',fA='all',fP='all',sortCol='aut',sortDir=1,sortCol2='prov',sortDir2=1;
+let fS='all',fM='all',fU='all',fA='all',fP='all',sortCol='aut',sortDir=1,sortCol2='prov',sortDir2=1;
 
 // ── Procesador Excel ──────────────────────────────────────────────────────
 const ESTADO_ORDER={Verificado:4,Analista:3,Gerente:2,Pivot:1};
@@ -563,7 +565,7 @@ function mapCuenta(prov,det,unidad){
   return'Otros';
 }
 // ── Render ────────────────────────────────────────────────────────────────
-function filtered(){return DATA.filter(r=>(fS==='all'||r.sem===fS)&&(fU==='all'||r.unidad===fU)&&(fA==='all'||r.aut===fA)&&(fP==='all'||r.prov===fP));}
+function filtered(){return DATA.filter(r=>(fM==='all'||r.mes===fM)&&(fS==='all'||r.sem===fS)&&(fU==='all'||r.unidad===fU)&&(fA==='all'||r.aut===fA)&&(fP==='all'||r.prov===fP));}
 function sumBy(rows,key){const m={};rows.forEach(r=>{m[r[key]]=(m[r[key]]||0)+r.imp;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
 
 const PROV_COLORS={};
@@ -659,12 +661,24 @@ function buildAllTabs(){
 
   months.forEach(mes=>{
     const tot=DATA.filter(r=>byMonth[mes].includes(r.sem)).reduce((s,r)=>s+r.imp,0);
-    html+=`<div class="sem-month-group"><span class="sem-month-label">${mes}</span><span style="font-size:10px;color:var(--muted);margin-left:2px">${fmtM(tot)}</span><div class="sem-month-line"></div></div>`;
+    const isActiveMes=fM===mes;
+    html+=`<div class="sem-month-group">
+      <span class="sem-month-label ${isActiveMes?'active-month':''}" onclick="
+        if(fM==='${mes}'){fM='all';}else{fM='${mes}';fS='all';}
+        document.querySelectorAll('.tab-sem').forEach(x=>x.classList.remove('on-s'));
+        document.querySelector('.tab-sem[data-val=\'all\']').classList.add('on-s');
+        document.querySelectorAll('.sem-month-label').forEach(x=>x.classList.remove('active-month'));
+        if(fM!=='all') this.classList.add('active-month');
+        render();
+      ">${mes}</span>
+      <span style="font-size:10px;color:var(--muted);margin-left:2px">${fmtM(tot)}</span>
+      <div class="sem-month-line"></div>
+    </div>`;
     html+=`<div class="sem-month-weeks">`;
     byMonth[mes].forEach(s=>{
       const stot=DATA.filter(r=>r.sem===s).reduce((acc,r)=>acc+r.imp,0);
       const label=s.replace('/2026','').replace('/2026','');
-      html+=`<button class="tab-sem ${fS===s?'on-s':''}" data-val="${s}" onclick="fS=this.dataset.val;document.querySelectorAll('.tab-sem').forEach(x=>x.classList.remove('on-s'));this.classList.add('on-s');render()">
+      html+=`<button class="tab-sem ${fS===s?'on-s':''}" data-val="${s}" onclick="fM='all';document.querySelectorAll('.sem-month-label').forEach(x=>x.classList.remove('active-month'));fS=this.dataset.val;document.querySelectorAll('.tab-sem').forEach(x=>x.classList.remove('on-s'));this.classList.add('on-s');render()">
         <span>${label}</span><span class="tab-sem-total">${fmtM(stot)}</span>
       </button>`;
     });
@@ -707,7 +721,7 @@ function render(){
   renderTable(rows);
 }
 
-function resetF(){fS='all';fU='all';fA='all';fP='all';const ps=document.getElementById('select-prov');if(ps)ps.value='all';buildAllTabs();render();}
+function resetF(){fM='all';fS='all';fU='all';fA='all';fP='all';const ps=document.getElementById('select-prov');if(ps)ps.value='all';buildAllTabs();render();}
 
 
 // Attach sort listeners once
